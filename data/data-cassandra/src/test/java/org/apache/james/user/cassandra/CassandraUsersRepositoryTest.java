@@ -20,26 +20,19 @@ package org.apache.james.user.cassandra;
 
 import org.apache.james.user.api.UsersRepository;
 import org.apache.james.user.lib.AbstractUsersRepositoryTest;
-import org.junit.After;
-import org.junit.Before;
+import org.cassandraunit.CassandraCQLUnit;
+import org.cassandraunit.dataset.cql.ClassPathCQLDataSet;
+import org.junit.Rule;
 
 public class CassandraUsersRepositoryTest extends AbstractUsersRepositoryTest {
 
+    @Rule
+    public CassandraCQLUnit cassandraCQLUnit = 
+    	new CassandraCQLUnit(new ClassPathCQLDataSet("userRepository.cql","users"));
 
-    @Before
-    @Override
-    public void setUp() throws Exception {
-        super.setUp();
-    }
-
-    @After
-    @Override
-    public void tearDown() throws Exception {
-        super.tearDown();
-    }
 
     @Override
     protected UsersRepository getUsersRepository() throws Exception {
-    	return null;
+    	return new CassandraUsersRepository(cassandraCQLUnit.session);
     }
 }
