@@ -148,4 +148,9 @@ public class MockRecipientRewriteTableManagementImpl implements RecipientRewrite
     public void removeAliasDomainMapping(String aliasDomain, String realDomain) throws RecipientRewriteTableException {
         removeRawMapping(null, aliasDomain, RecipientRewriteTable.ALIASDOMAIN_PREFIX + realDomain);
     }
+    
+    @Override
+    public void setRecursiveMapping(boolean enable) {
+    	throw new UnsupportedOperationException("Not implemented");
+    }
 }

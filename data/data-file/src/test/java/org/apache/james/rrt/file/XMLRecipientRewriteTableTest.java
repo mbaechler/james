@@ -18,23 +18,22 @@
  ****************************************************************/
 package org.apache.james.rrt.file;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.apache.commons.configuration.DefaultConfigurationBuilder;
 import org.apache.james.rrt.api.RecipientRewriteTable;
 import org.apache.james.rrt.api.RecipientRewriteTableException;
-import org.apache.james.rrt.lib.AbstractRecipientRewriteTable;
 import org.apache.james.rrt.lib.AbstractRecipientRewriteTableTest;
 import org.apache.james.rrt.lib.RecipientRewriteTableUtil;
 import org.junit.Before;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 /**
  * Test the XML Virtual User Table implementation.
  */
-public class XMLRecipientRewriteTableTest extends AbstractRecipientRewriteTableTest {
+public class XMLRecipientRewriteTableTest extends AbstractRecipientRewriteTableTest<XMLRecipientRewriteTable> {
 
     private final DefaultConfigurationBuilder defaultConfiguration = new DefaultConfigurationBuilder();
 
@@ -46,7 +45,7 @@ public class XMLRecipientRewriteTableTest extends AbstractRecipientRewriteTableT
     }
 
     @Override
-    protected AbstractRecipientRewriteTable getRecipientRewriteTable() throws Exception {
+    protected XMLRecipientRewriteTable getRecipientRewriteTable() throws Exception {
         XMLRecipientRewriteTable localVirtualUserTable = new XMLRecipientRewriteTable();
         localVirtualUserTable.setLog(LoggerFactory.getLogger("MockLog"));
         return localVirtualUserTable;

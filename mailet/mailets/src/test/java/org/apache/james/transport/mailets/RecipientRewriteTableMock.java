@@ -145,4 +145,9 @@ public class RecipientRewriteTableMock implements org.apache.james.rrt.api.Recip
     public void removeAliasDomainMapping(String aliasDomain, String realDomain) throws RecipientRewriteTableException {
         throw new UnsupportedOperationException("Not implemented");
     }
+    
+    @Override
+    public void setRecursiveMapping(boolean enable) {
+    	   throw new UnsupportedOperationException("Not implemented");
+    }
 }

@@ -35,9 +35,9 @@ import org.junit.Test;
  * simple, regexp, wildcard, error,... Extend this and instanciate the needed
  * virtualUserTable implementation.
  */
-public abstract class AbstractRecipientRewriteTableTest {
+public abstract class AbstractRecipientRewriteTableTest<T extends RecipientRewriteTable> {
 
-    protected AbstractRecipientRewriteTable virtualUserTable;
+    protected T virtualUserTable;
     protected final static int REGEX_TYPE = 0;
     protected final static int ERROR_TYPE = 1;
     protected final static int ADDRESS_TYPE = 2;
@@ -295,7 +295,7 @@ public abstract class AbstractRecipientRewriteTableTest {
 
     }
 
-    protected abstract AbstractRecipientRewriteTable getRecipientRewriteTable() throws Exception;
+    protected abstract T getRecipientRewriteTable() throws Exception;
 
     protected abstract boolean addMapping(String user, String domain, String mapping, int type) throws
             RecipientRewriteTableException;

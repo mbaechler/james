@@ -299,6 +299,11 @@ public class SMTPServerTest {
                     RecipientRewriteTableException {
                 throw new UnsupportedOperationException("Not implemented");
             }
+
+			@Override
+			public void setRecursiveMapping(boolean enable) {
+				throw new UnsupportedOperationException("Not implemented");
+			}
         });
     
         chain.put("org.apache.james.smtpserver.protocol.DNSService", dnsService);

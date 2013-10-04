@@ -267,4 +267,9 @@ public abstract class AbstractJamesUsersRepository extends AbstractUsersReposito
 
     }
 
+    @Override
+    public void setRecursiveMapping(boolean enable) {
+    	throw new UnsupportedOperationException();
+    }
+    
 }

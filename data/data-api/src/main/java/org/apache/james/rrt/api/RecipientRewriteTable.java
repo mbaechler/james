@@ -213,4 +213,6 @@ public interface RecipientRewriteTable {
         }
 
     }
+
+	void setRecursiveMapping(boolean enable);
 }

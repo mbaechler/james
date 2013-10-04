@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.apache.james.domainlist.api.mock.SimpleDomainList;
 import org.apache.james.protocols.api.ProtocolSession.State;
 import org.apache.james.protocols.smtp.MailAddress;
@@ -34,8 +35,10 @@ import org.apache.james.rrt.api.RecipientRewriteTableException;
 import org.apache.james.smtpserver.fastfail.ValidRcptHandler;
 import org.apache.james.user.api.UsersRepository;
 import org.apache.james.user.lib.mock.MockUsersRepository;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -196,6 +199,11 @@ public class ValidRcptHandlerTest {
                     RecipientRewriteTableException {
                 throw new UnsupportedOperationException("Not implemented");
 
+            }
+            
+            @Override
+            public void setRecursiveMapping(boolean enable) {
+            	throw new UnsupportedOperationException("Not implemented");
             }
         };
         return table;
