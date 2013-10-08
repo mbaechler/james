@@ -281,8 +281,8 @@ public abstract class AbstractRecipientRewriteTableTest<T extends RecipientRewri
                     ALIASDOMAIN_TYPE));
 
             Iterator<String> mappings = virtualUserTable.getMappings(user, aliasDomain).iterator();
-            assertEquals("Domain mapped as first ", mappings.next(), user + "@" + domain);
-            assertEquals("Address mapped as second ", mappings.next(), user2 + "@" + domain);
+            assertEquals("Domain mapped as first ", user + "@" + domain, mappings.next());
+            assertEquals("Address mapped as second ", user2 + "@" + domain, mappings.next());
 
             assertTrue("Remove mapping", removeMapping(RecipientRewriteTable.WILDCARD, aliasDomain, user2 + "@" + domain,
                     ADDRESS_TYPE));
