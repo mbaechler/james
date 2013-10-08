@@ -1,0 +1,1 @@
+CREATE TABLE rrt (user text, domain text, entry text, type text, PRIMARY KEY (user, domain, entry, type));

@@ -18,32 +18,74 @@
  ****************************************************************/
 package org.apache.james.rrt.cassandra;
 
+import org.apache.james.rrt.api.RecipientRewriteTable;
 import org.apache.james.rrt.api.RecipientRewriteTableException;
-import org.apache.james.rrt.lib.AbstractRecipientRewriteTable;
+import org.apache.james.rrt.api.RecipientRewriteTable.ErrorMappingException;
 import org.apache.james.rrt.lib.AbstractRecipientRewriteTableTest;
-import org.junit.Before;
+import org.cassandraunit.CassandraCQLUnit;
+import org.cassandraunit.dataset.cql.ClassPathCQLDataSet;
+import org.junit.Ignore;
+import org.junit.Rule;
+import org.junit.Test;
 
-public class CassandraRecipientRewriteTableTest extends AbstractRecipientRewriteTableTest {
+public class CassandraRecipientRewriteTableTest extends AbstractRecipientRewriteTableTest<RecipientRewriteTable> {
 
-    @Before
+    @Rule
+    public CassandraCQLUnit cassandraCQLUnit = 
+    	new CassandraCQLUnit(new ClassPathCQLDataSet("recipientRewriteTable.cql","recipientRewriteTable"));
+
+	
     @Override
-    public void setUp() throws Exception {
-        super.setUp();
-    }
-
-    @Override
-    protected AbstractRecipientRewriteTable getRecipientRewriteTable() throws Exception {
-    	return null;
+    protected RecipientRewriteTable getRecipientRewriteTable() throws Exception {
+    	return new CassandraRecipientRewriteTable(cassandraCQLUnit.session);
     }
 
     @Override
     protected boolean addMapping(String user, String domain, String mapping, int type) {
-    	return false;
+    	try {
+            if (type == ERROR_TYPE) {
+                virtualUserTable.addErrorMapping(user, domain, mapping);
+            } else if (type == REGEX_TYPE) {
+                virtualUserTable.addRegexMapping(user, domain, mapping);
+            } else if (type == ADDRESS_TYPE) {
+                virtualUserTable.addAddressMapping(user, domain, mapping);
+            } else if (type == ALIASDOMAIN_TYPE) {
+                virtualUserTable.addAliasDomainMapping(domain, mapping);
+            } else {
+                return false;
+            }
+            return true;
+        } catch (RecipientRewriteTableException e) {
+            return false;
+        }
     }
 
     @Override
     protected boolean removeMapping(String user, String domain, String mapping, int type) throws
-            RecipientRewriteTableException {
-    	return false;
+    RecipientRewriteTableException {
+    	try {
+    		if (type == ERROR_TYPE) {
+    			virtualUserTable.removeErrorMapping(user, domain, mapping);
+    		} else if (type == REGEX_TYPE) {
+    			virtualUserTable.removeRegexMapping(user, domain, mapping);
+    		} else if (type == ADDRESS_TYPE) {
+    			virtualUserTable.removeAddressMapping(user, domain, mapping);
+    		} else if (type == ALIASDOMAIN_TYPE) {
+    			virtualUserTable.removeAliasDomainMapping(domain, mapping);
+    		} else {
+    			return false;
+    		}
+    		return true;
+    	} catch (RecipientRewriteTableException e) {
+    		return false;
+    	}
+    }
+
+    @Ignore("recursive mapping not supported")
+    @Test
+    @Override
+    public void testRecursiveMapping() throws ErrorMappingException,
+    		RecipientRewriteTableException {
+    	super.testRecursiveMapping();
     }
 }
