@@ -53,6 +53,7 @@
 
     <modules>
         <module>app</module>
+        <module>guice-in-memory-app</module>
 
         <module>karaf/distribution</module>
         <module>karaf/features</module>
@@ -505,6 +506,11 @@
                 <artifactId>apache-james-mailbox-memory</artifactId>
                 <version>${mailbox.version}</version>
                 <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.james</groupId>
+                <artifactId>apache-james-mailbox-cassandra</artifactId>
+                <version>${mailbox.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.james</groupId>
