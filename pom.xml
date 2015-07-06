@@ -75,6 +75,7 @@
         <module>dns-service/dnsservice-library</module>
 
         <module>data/data-api</module>
+        <module>data/data-cassandra</module>
         <module>data/data-library</module>
         <module>data/data-jpa</module>
         <module>data/data-jcr</module>
@@ -177,6 +178,9 @@
         <pax-logging-api.version>1.6.4</pax-logging-api.version>
         <mockito-core.version>1.9.0</mockito-core.version>
         <backends.version>1.8.3-SNAPSHOT</backends.version>
+        <cassandra-driver-core.version>2.1.7.1</cassandra-driver-core.version>
+        <assertj.version>2.0.0</assertj.version>
+        <cassandra-unit.version>2.0.2.2</cassandra-unit.version>
     </properties>
 
     <dependencyManagement>
@@ -289,6 +293,12 @@
                 <groupId>org.apache.james</groupId>
                 <artifactId>apache-james-backends-cassandra</artifactId>
                 <version>${backends.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.james</groupId>
+                <artifactId>apache-james-backends-cassandra</artifactId>
+                <version>${backends.version}</version>
+                <type>test-jar</type>
             </dependency>
             <dependency>
                 <groupId>org.apache.james</groupId>
@@ -443,6 +453,11 @@
                 <version>${project.version}</version>
                 <scope>test</scope>
                 <type>test-jar</type>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.james</groupId>
+                <artifactId>james-server-data-cassandra</artifactId>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.james</groupId>
