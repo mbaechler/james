@@ -105,7 +105,6 @@ public abstract class AbstractDomainListTest {
         domainList.addDomain(DOMAIN_1);
         try {
             domainList.removeDomain(DOMAIN_2);
-            fail("removeDomain should have thrown");
         } catch (DomainListException e) {
 
         }
