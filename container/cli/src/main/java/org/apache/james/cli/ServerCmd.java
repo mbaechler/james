@@ -248,11 +248,7 @@ public class ServerCmd {
         for (CmdType cmdType : CmdType.values()) {
             footerBuilder.append(cmdType.getUsage()).append("\n");
         }
-        new HelpFormatter().printHelp(
-            String.format("java %s --host <arg> <command>%n", ServerCmd.class.getName()),
-            "",
-            createOptions(),
-            footerBuilder.toString());
+        new HelpFormatter().printHelp(String.format("java %s --host <arg> <command>%n", ServerCmd.class.getName()), "", createOptions(), footerBuilder.toString());
     }
 
 }
