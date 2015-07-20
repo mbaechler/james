@@ -75,7 +75,7 @@
             <artifactId>slf4j-api</artifactId>
         </dependency>
 
-        <!-- Test depandancies -->
+        <!-- Test dependencies -->
         <dependency>
             <groupId>org.apache.james</groupId>
             <artifactId>james-server-dnsservice-api</artifactId>
@@ -94,6 +94,26 @@
             <version>${cassandra-unit.version}</version>
             <scope>test</scope>
         </dependency>
+	<dependency>
+            <groupId>org.apache.cassandra</groupId>
+            <artifactId>cassandra-all</artifactId>
+            <version>2.1.7</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -109,7 +129,6 @@
             <artifactId>assertj-core</artifactId>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
 
 
