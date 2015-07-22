@@ -35,6 +35,8 @@ import org.apache.james.user.api.UsersRepositoryException;
 import org.apache.james.user.lib.AbstractUsersRepositoryTest;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -101,14 +103,6 @@ public class UsersFileRepositoryTest extends AbstractUsersRepositoryTest {
         res.init();
         return res;
     }
-    
-    /* Disable testUpperCaseSameUser test.
-     *
-     * @see org.apache.james.user.lib.AbstractUsersRepositoryTest#testUpperCaseSameUser()
-     */
-    @Override
-    public void testUpperCaseSameUser() throws UsersRepositoryException {
-    }
 
 
     protected void disposeUsersRepository() throws UsersRepositoryException {
@@ -121,4 +115,14 @@ public class UsersFileRepositoryTest extends AbstractUsersRepositoryTest {
         }
     }
 
+    @Ignore
+    @Test(expected=UsersRepositoryException.class)
+    public void addUserShouldNotAllowUsersNotTakeCaseIntoAccountForDuplicate() throws UsersRepositoryException {
+    }
+    
+
+    @Ignore
+    @Test(expected=UsersRepositoryException.class)
+    public void remoteUnknownUserShouldThrow() throws UsersRepositoryException {
+    }
 }

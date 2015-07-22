@@ -864,7 +864,6 @@
                 <groupId>org.assertj</groupId>
                 <artifactId>assertj-core</artifactId>
                 <version>2.0.0</version>
-                <scope>test</scope>
             </dependency>
 
             <dependency>
