@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
+import javax.annotation.Resource;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -43,7 +44,8 @@ public class CassandraDomainList extends AbstractDomainList {
     private Session session;
 
     @Inject
-    public CassandraDomainList(@Named("cassandra-session") Session session) {
+    @Resource
+    public void setSession(@Named("cassandra-session") Session session) {
         this.session = session;
     }
 
