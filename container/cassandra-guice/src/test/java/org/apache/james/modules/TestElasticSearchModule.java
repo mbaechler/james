@@ -16,24 +16,37 @@
  * specific language governing permissions and limitations      *
  * under the License.                                           *
  ****************************************************************/
-package org.apache.james;
 
-import com.google.inject.Module;
-import com.google.inject.Guice;
+package org.apache.james.modules;
 
-public class CassandraJamesServer {
+import com.google.inject.AbstractModule;
+import com.google.inject.Provides;
+import org.apache.james.mailbox.elasticsearch.ClientProvider;
+import org.apache.james.mailbox.elasticsearch.EmbeddedElasticSearch;
+import org.apache.james.mailbox.elasticsearch.IndexCreationFactory;
+import org.apache.james.mailbox.elasticsearch.NodeMappingFactory;
+import org.apache.james.mailbox.elasticsearch.utils.TestingClientProvider;
 
-    private final Module serverModule;
+import javax.inject.Singleton;
 
-    public CassandraJamesServer(Module serverModule) {
-        this.serverModule = serverModule;
+public class TestElasticSearchModule extends AbstractModule{
+
+    private final EmbeddedElasticSearch embeddedElasticSearch;
+
+    public TestElasticSearchModule(EmbeddedElasticSearch embeddedElasticSearch) {
+        this.embeddedElasticSearch = embeddedElasticSearch;
     }
 
-    public void start() {
-        Guice.createInjector(serverModule);
+    @Override
+    protected void configure() {
+
     }
 
-    public void stop() {
+    @Provides
+    @Singleton
+    protected ClientProvider provideClientProvider() {
+        return NodeMappingFactory.applyMapping(
+            IndexCreationFactory.createIndex(new TestingClientProvider(embeddedElasticSearch.getNode()))
+        );
     }
-
 }

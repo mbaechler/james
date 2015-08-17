@@ -23,6 +23,7 @@ import com.google.inject.Module;
 import com.google.inject.util.Modules;
 import org.apache.james.modules.mailbox.CassandraMailboxModule;
 import org.apache.james.modules.mailbox.CassandraSessionModule;
+import org.apache.james.modules.mailbox.ElasticSearchMailboxModule;
 import org.apache.james.modules.server.DNSServiceModule;
 import org.apache.james.modules.server.JpaDomainListModule;
 import org.apache.james.modules.server.JpaUsersRepositoryModule;
@@ -31,6 +32,7 @@ public class CassandraJamesServerMain {
 
     public static final Module defaultModule = Modules.combine(new CassandraMailboxModule(),
         new CassandraSessionModule(),
+        new ElasticSearchMailboxModule(),
         new JpaUsersRepositoryModule(),
         new JpaDomainListModule(),
         new DNSServiceModule());
