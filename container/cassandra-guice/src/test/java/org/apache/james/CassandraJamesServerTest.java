@@ -20,6 +20,7 @@ package org.apache.james;
 
 import java.util.Properties;
 
+import javax.inject.Provider;
 import javax.mail.AuthenticationFailedException;
 import javax.mail.NoSuchProviderException;
 import javax.mail.Session;
@@ -28,21 +29,40 @@ import javax.mail.Store;
 import org.apache.james.backends.cassandra.CassandraClusterSingleton;
 import org.apache.james.backends.cassandra.init.CassandraFeaturesComposite;
 import org.apache.james.mailbox.cassandra.CassandraMailboxFeatures;
+import org.apache.james.mailbox.elasticsearch.ClientProvider;
+import org.apache.james.mailbox.elasticsearch.EmbeddedElasticSearch;
+import org.apache.james.mailbox.elasticsearch.NodeMappingFactory;
+import org.apache.james.mailbox.elasticsearch.IndexCreationFactory;
+import org.apache.james.mailbox.elasticsearch.utils.TestingClientProvider;
+import org.apache.james.modules.mailbox.ElasticSearchMailboxModule;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+
+import org.junit.rules.RuleChain;
+import org.junit.rules.TemporaryFolder;
 
 public class CassandraJamesServerTest {
 
-    private CassandraJamesServer server;
     private static final CassandraClusterSingleton CASSANDRA = CassandraClusterSingleton.create(new CassandraFeaturesComposite(new CassandraMailboxFeatures(), new CassandraDataFeatures()));
     private static final int IMAP_PORT = 1143; // You need to be root (superuser) to bind to ports under 1024.
+
+    private CassandraJamesServer server;
+    private TemporaryFolder temporaryFolder = new TemporaryFolder();
+    private EmbeddedElasticSearch embeddedElasticSearch = new EmbeddedElasticSearch(temporaryFolder);
+
+    @Rule
+    public RuleChain chain = RuleChain.outerRule(temporaryFolder).around(embeddedElasticSearch);
 
     @Before
     public void setup() throws Exception {
         CASSANDRA.ensureAllTables();
 
-        server = new CassandraJamesServer();
+        Provider<ClientProvider> clientProviderProvider = () -> NodeMappingFactory.applyMapping(
+            IndexCreationFactory.createIndex(new TestingClientProvider(embeddedElasticSearch.getNode()))
+        );
+        server = new CassandraJamesServer(new ElasticSearchMailboxModule(clientProviderProvider));
         server.start();
     }
 
@@ -53,10 +73,10 @@ public class CassandraJamesServerTest {
     }
 
     @Test (expected = AuthenticationFailedException.class)
-    public void connectShouldThrowWhenNoCrendentials() throws Exception {
+    public void connectIMAPServerShouldThrowWhenNoCredentials() throws Exception {
         store().connect();
     }
-    
+
     private Store store() throws NoSuchProviderException {
         Properties properties = new Properties();
         properties.put("mail.imap.host", "localhost");
