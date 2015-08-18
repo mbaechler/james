@@ -17,31 +17,43 @@
  * under the License.                                           *
  ****************************************************************/
 
-package org.apache.james;
+package org.apache.james.modules.server;
 
-import com.google.inject.Module;
-import com.google.inject.util.Modules;
-import org.apache.james.modules.mailbox.CassandraMailboxModule;
-import org.apache.james.modules.mailbox.CassandraSessionModule;
-import org.apache.james.modules.mailbox.ElasticSearchMailboxModule;
-import org.apache.james.modules.server.ActiveMQQueueModule;
-import org.apache.james.modules.server.DNSServiceModule;
-import org.apache.james.modules.server.JpaDomainListModule;
-import org.apache.james.modules.server.JpaUsersRepositoryModule;
+import com.google.inject.AbstractModule;
+import com.google.inject.Inject;
+import com.google.inject.Provides;
+import com.google.inject.Singleton;
+import org.apache.james.queue.activemq.ActiveMQMailQueueFactory;
+import org.apache.james.queue.api.MailQueueFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class CassandraJamesServerMain {
+import javax.jms.ConnectionFactory;
 
-    public static final Module defaultModule = Modules.combine(new CassandraMailboxModule(),
-        new CassandraSessionModule(),
-        new ElasticSearchMailboxModule(),
-        new JpaUsersRepositoryModule(),
-        new JpaDomainListModule(),
-        new DNSServiceModule(),
-        new ActiveMQQueueModule());
+public class ActiveMQQueueModule extends AbstractModule {
 
-    public static void main(String[] args) throws Exception {
-        CassandraJamesServer server = new CassandraJamesServer(defaultModule);
-        server.start();
+    private static Logger LOGGER = LoggerFactory.getLogger(ActiveMQQueueModule.class);
+
+    @Override
+    protected void configure() {
+
+    }
+
+    @Provides
+    @Singleton
+    ConnectionFactory provideEmbededActiveMQ(EmbeddedActiveMQ embeddedActiveMQ) {
+        return embeddedActiveMQ.getConnectionFactory();
+    }
+
+    @Provides
+    @Singleton
+    public MailQueueFactory createActiveMailQueueFactory(ConnectionFactory connectionFactory) {
+        ActiveMQMailQueueFactory result = new ActiveMQMailQueueFactory();
+        result.setUseJMX(true);
+        result.setConnectionFactory(connectionFactory);
+        result.setLog(LOGGER);
+        result.init();
+        return result;
     }
 
 }
