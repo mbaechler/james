@@ -36,13 +36,16 @@ import org.apache.james.modules.server.SieveModule;
 
 import com.google.inject.Guice;
 import org.apache.james.utils.ConfigurationsPerformer;
+import org.apache.onami.lifecycle.jsr250.PreDestroyModule;
 
 public class CassandraJamesServer {
 
     private final ElasticSearchMailboxModule elasticSearchMailboxModule;
+    private final PreDestroyModule preDestroyModule;
 
     public CassandraJamesServer(ElasticSearchMailboxModule elasticSearchMailboxModule) {
         this.elasticSearchMailboxModule = elasticSearchMailboxModule;
+        this.preDestroyModule = new PreDestroyModule();
     }
 
     public CassandraJamesServer() {
@@ -63,12 +66,14 @@ public class CassandraJamesServer {
             new LMTPServerModule(),
             new ActiveMQQueueModule(),
             new SieveModule(),
-            new CamelMailetContainerModule()
+            new CamelMailetContainerModule(),
+            preDestroyModule
         );
         injector.getInstance(ConfigurationsPerformer.class).initModules();
     }
 
     public void stop() {
+        preDestroyModule.getStager().stage();
     }
 
 }
