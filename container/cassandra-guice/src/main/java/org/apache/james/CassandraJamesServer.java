@@ -31,6 +31,7 @@ import org.apache.james.modules.server.ActiveMQQueueModule;
 import org.apache.james.modules.server.CamelMailetContainerModule;
 import org.apache.james.modules.server.CassandraDataModule;
 import org.apache.james.modules.server.DNSServiceModule;
+import org.apache.james.modules.server.JMXServerModule;
 import org.apache.james.modules.server.MailStoreRepositoryModule;
 import org.apache.james.modules.server.SieveModule;
 
@@ -67,7 +68,8 @@ public class CassandraJamesServer {
             new ActiveMQQueueModule(),
             new SieveModule(),
             new CamelMailetContainerModule(),
-            preDestroyModule
+            preDestroyModule,
+            new JMXServerModule()
         );
         injector.getInstance(ConfigurationsPerformer.class).initModules();
     }
