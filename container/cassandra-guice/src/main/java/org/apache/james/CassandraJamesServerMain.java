@@ -33,6 +33,7 @@ import org.apache.james.modules.server.ActiveMQQueueModule;
 import org.apache.james.modules.server.CamelMailetContainerModule;
 import org.apache.james.modules.server.CassandraDataModule;
 import org.apache.james.modules.server.DNSServiceModule;
+import org.apache.james.modules.server.JMXServerModule;
 import org.apache.james.modules.server.MailStoreRepositoryModule;
 import org.apache.james.modules.server.SieveModule;
 
@@ -49,6 +50,7 @@ public class CassandraJamesServerMain {
         new POP3ServerModule(),
         new SMTPServerModule(),
         new LMTPServerModule(),
+        new JMXServerModule(),
         new SieveModule(),
         new CamelMailetContainerModule(),
         new ActiveMQQueueModule());
