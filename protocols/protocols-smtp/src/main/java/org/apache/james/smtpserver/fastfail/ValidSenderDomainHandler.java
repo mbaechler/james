@@ -31,7 +31,7 @@ public class ValidSenderDomainHandler extends org.apache.james.protocols.smtp.co
     private DNSService dnsService;
 
     @Inject
-    public void setDNSService(@Named("dnsservice") DNSService dnsService) {
+    public void setDNSService(DNSService dnsService) {
         this.dnsService = dnsService;
     }
 

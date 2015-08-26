@@ -32,7 +32,6 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 import javax.annotation.Resource;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.apache.james.domainlist.api.DomainListException;
 import org.apache.james.domainlist.lib.AbstractDomainList;
@@ -45,7 +44,7 @@ public class CassandraDomainList extends AbstractDomainList {
 
     @Inject
     @Resource
-    public void setSession(@Named("cassandra-session") Session session) {
+    public void setSession(Session session) {
         this.session = session;
     }
 

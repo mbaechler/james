@@ -20,7 +20,6 @@ package org.apache.james.transport.mailets;
 
 import java.util.Date;
 
-import javax.annotation.Resource;
 import javax.inject.Inject;
 import javax.mail.MessagingException;
 
@@ -58,11 +57,9 @@ import org.apache.mailet.base.GenericMailet;
 public class ToSenderFolder extends GenericMailet {
 
     @Inject
-    @Resource(name = "usersrepository")
     private UsersRepository usersRepository;
 
     @Inject
-    @Resource(name = "mailboxmanager")
     private MailboxManager mailboxManager;
 
     private String folder;
