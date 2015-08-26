@@ -36,6 +36,7 @@ import org.apache.james.managesieve.api.StorageException;
 import org.apache.james.managesieve.api.UserNotFoundException;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -157,7 +158,7 @@ public class SieveFileRepository implements SieveRepository {
     }
 
     @Inject
-    public void setFileSystem(FileSystem fileSystem) {
+    public void setFileSystem(@Named("filesystem") FileSystem fileSystem) {
         _fileSystem = fileSystem;
     }
 

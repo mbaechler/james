@@ -22,6 +22,7 @@ package org.apache.james.transport.mailets;
 import java.util.Iterator;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.mail.MessagingException;
 
 import org.apache.james.lifecycle.api.LifecycleUtil;
@@ -58,7 +59,7 @@ public class FromRepository extends GenericMailet {
     private MailRepositoryStore mailStore;
 
     @Inject
-    public void setStore(MailRepositoryStore mailStore) {
+    public void setStore(@Named("mailrepositorystore")MailRepositoryStore mailStore) {
         this.mailStore = mailStore;
     }
 

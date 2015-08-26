@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
@@ -44,7 +45,7 @@ public class RecipientRewriteTable extends AbstractRecipientRewriteTableMailet {
      *            the vutStore to set, possibly null
      */
     @Inject
-    public final void setRecipientRewriteTable(org.apache.james.rrt.api.RecipientRewriteTable vut) {
+    public final void setRecipientRewriteTable(@Named("recipientrewritetable") org.apache.james.rrt.api.RecipientRewriteTable vut) {
         this.vut = vut;
     }
 

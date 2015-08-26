@@ -77,7 +77,7 @@ public class ValidRcptHandler extends AbstractValidRcptHandler implements Initia
      *            the tableStore to set
      */
     @Inject
-    public final void setRecipientRewriteTable(RecipientRewriteTable vut) {
+    public final void setRecipientRewriteTable(@Named("recipientrewritetable") RecipientRewriteTable vut) {
         this.vut = vut;
     }
 

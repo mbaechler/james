@@ -26,6 +26,7 @@ import java.util.LinkedList;
 import java.util.Vector;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
@@ -45,7 +46,7 @@ public abstract class AbstractRecipientRewriteTableMailet extends GenericMailet 
     private DomainList domainList;
 
     @Inject
-    public void setDomainList(DomainList domainList) {
+    public void setDomainList(@Named("domainlist") DomainList domainList) {
         this.domainList = domainList;
     }
 
