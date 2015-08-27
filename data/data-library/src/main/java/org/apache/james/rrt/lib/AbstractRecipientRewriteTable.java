@@ -178,7 +178,7 @@ public abstract class AbstractRecipientRewriteTable implements RecipientRewriteT
                             // add mapping
                             mappings.add(target);
                         } else {
-                            mappings.addAll(childMappings);
+                            mappings = mappings.addAll(childMappings);
                         }
 
                     } else {
