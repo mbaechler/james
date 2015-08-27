@@ -28,8 +28,11 @@ import org.apache.james.modules.protocols.IMAPServerModule;
 import org.apache.james.modules.protocols.POP3ServerModule;
 import org.apache.james.modules.protocols.ProtocolHandlerModule;
 import org.apache.james.modules.server.ActiveMQQueueModule;
+import org.apache.james.modules.server.CamelMailetContainerModule;
 import org.apache.james.modules.server.CassandraDataModule;
 import org.apache.james.modules.server.DNSServiceModule;
+import org.apache.james.modules.server.SieveModule;
+
 import com.google.inject.Guice;
 import org.apache.james.utils.ConfigurationsPerformer;
 
@@ -56,7 +59,9 @@ public class CassandraJamesServer {
             new POP3ServerModule(),
             new SMTPServerModule(),
             new LMTPServerModule(),
-            new ActiveMQQueueModule()
+            new ActiveMQQueueModule(),
+            new SieveModule(),
+            new CamelMailetContainerModule()
         );
         injector.getInstance(ConfigurationsPerformer.class).initModules();
     }
