@@ -21,6 +21,4 @@ public interface Mappings extends Iterable<String> {
 
     boolean isEmpty();
 
-    String[] toArray(String[] strings);
-
 }

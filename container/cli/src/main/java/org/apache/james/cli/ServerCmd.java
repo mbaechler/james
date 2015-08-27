@@ -20,6 +20,7 @@ package org.apache.james.cli;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -174,7 +175,7 @@ public class ServerCmd {
             } else if (CmdType.LISTUSERDOMAINMAPPINGS.equals(cmdType)) {
                 if (cmdType.hasCorrectArguments(arguments.length)) {
                     Mappings userDomainMappings = probe.listUserDomainMappings(arguments[1], arguments[2]);
-                    sCmd.print(userDomainMappings.toArray(new String[userDomainMappings.size()]), System.out);
+                    sCmd.print(userDomainMappings, System.out);
                 } else {
                     printUsage();
                     System.exit(1);
@@ -243,6 +244,10 @@ public class ServerCmd {
      * @param out  The output stream to which printing should occur.
      */
     public void print(String[] data, PrintStream out) {
+        print(Arrays.asList(data), out);
+    }
+
+    public void print(Iterable<String> data, PrintStream out) {
         if (data == null)
             return;
 
@@ -252,7 +257,7 @@ public class ServerCmd {
 
         out.println();
     }
-
+    
     public void print(Map<String, ? extends Iterable<String>> map, PrintStream out) {
         if (map == null)
             return;
