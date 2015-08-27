@@ -19,6 +19,10 @@
 package org.apache.james.jmap;
 
 import static com.jayway.restassured.RestAssured.given;
+import static com.jayway.restassured.RestAssured.*;
+import static com.jayway.restassured.config.RestAssuredConfig.*;
+import static com.jayway.restassured.config.EncoderConfig.*;
+import static com.jayway.restassured.matcher.RestAssuredMatchers.*;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
@@ -41,23 +45,67 @@ public class JMAPAuthenticationTest {
  
         ServletHandler handler = new ServletHandler();
         server.setHandler(handler);
- 
+        
         handler.addServletWithMapping(AuthenticationServlet.class, "/*");
  
         server.start();
 
         int localPort = ((ServerConnector)server.getConnectors()[0]).getLocalPort();
         RestAssured.port = localPort;
+        RestAssured.config = newConfig().encoderConfig(encoderConfig().defaultContentCharset("UTF-8"));
 	}
 	
 	@Test
-	public void shouldReturnMalformedRequestWhenXMLContentType() {
-		given().
-			contentType(ContentType.XML).
-		when().
-			post("/authentication").
-		then().
-			statusCode(400);
+	public void mustReturnMalformedRequestWhenContentTypeIsMissing() {
+		given()
+			.accept(ContentType.JSON)
+		.when()
+			.post("/authentication")
+		.then()
+			.statusCode(400);
+	}
+	
+	@Test
+	public void mustReturnMalformedRequestWhenContentTypeIsNotJson() {
+		given()
+			.contentType(ContentType.XML)
+			.accept(ContentType.JSON)
+		.when()
+			.post("/authentication")
+		.then()
+			.statusCode(400);
+	}
+	
+	@Test
+	public void mustReturnMalformedRequestWhenAcceptIsMissing() {
+		given()
+			.contentType(ContentType.JSON)
+		.when()
+			.post("/authentication")
+		.then()
+			.statusCode(400);
+	}
+	
+	@Test
+	public void mustReturnMalformedRequestWhenAcceptIsNotJson() {
+		given()
+			.contentType(ContentType.JSON)
+			.accept(ContentType.XML)
+		.when()
+			.post("/authentication")
+		.then()
+			.statusCode(400);
+	}
+	
+	@Test
+	public void mustReturnMalformedRequestWhenCharsetIsNotUTF8() {
+		given()
+			.contentType("application/json; charset=ISO-8859-1")
+			.accept(ContentType.JSON)
+		.when()
+			.post("/authentication")
+		.then()
+			.statusCode(400);
 	}
 	
 	@After
