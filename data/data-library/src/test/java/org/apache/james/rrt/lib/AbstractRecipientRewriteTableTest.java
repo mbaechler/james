@@ -18,15 +18,19 @@
  ****************************************************************/
 package org.apache.james.rrt.lib;
 
-import java.util.Collection;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.Iterator;
 import java.util.Map;
+
 import org.apache.james.lifecycle.api.LifecycleUtil;
 import org.apache.james.rrt.api.RecipientRewriteTable;
 import org.apache.james.rrt.api.RecipientRewriteTable.ErrorMappingException;
 import org.apache.james.rrt.api.RecipientRewriteTableException;
 import org.junit.After;
-import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -51,14 +55,14 @@ public abstract class AbstractRecipientRewriteTableTest {
     @After
     public void tearDown() throws Exception {
 
-        Map<String, Collection<String>> mappings = virtualUserTable.getAllMappings();
+        Map<String, Mappings> mappings = virtualUserTable.getAllMappings();
 
         if (mappings != null) {
 
             for (String key : virtualUserTable.getAllMappings().keySet()) {
                 String args[] = key.split("@");
 
-                Collection<String> map = mappings.get(key);
+                Mappings map = mappings.get(key);
 
                 for (String aMap : map) {
                     try {
