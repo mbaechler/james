@@ -30,8 +30,10 @@ import org.apache.james.modules.protocols.POP3ServerModule;
 import org.apache.james.modules.protocols.ProtocolHandlerModule;
 import org.apache.james.modules.protocols.SMTPServerModule;
 import org.apache.james.modules.server.ActiveMQQueueModule;
+import org.apache.james.modules.server.CamelMailetContainerModule;
 import org.apache.james.modules.server.CassandraDataModule;
 import org.apache.james.modules.server.DNSServiceModule;
+import org.apache.james.modules.server.SieveModule;
 
 public class CassandraJamesServerMain {
 
@@ -45,6 +47,8 @@ public class CassandraJamesServerMain {
         new POP3ServerModule(),
         new SMTPServerModule(),
         new LMTPServerModule(),
+        new SieveModule(),
+        new CamelMailetContainerModule(),
         new ActiveMQQueueModule());
 
     public static void main(String[] args) throws Exception {
