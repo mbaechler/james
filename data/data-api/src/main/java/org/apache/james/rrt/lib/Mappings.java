@@ -8,8 +8,6 @@ public interface Mappings extends Iterable<String> {
     
     Mappings addAll(Mappings toAdd);
 
-    void add(String mapping);
-
     boolean contains(String mapping);
 
     int size();
