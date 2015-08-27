@@ -177,6 +177,7 @@
         <karaf.tooling.exam.container.version>2.3.0</karaf.tooling.exam.container.version>
         <pax-logging-api.version>1.6.4</pax-logging-api.version>
         <mockito-core.version>1.9.0</mockito-core.version>
+        <cassandra-driver-core.version>2.1.5</cassandra-driver-core.version>
     </properties>
 
     <dependencyManagement>
@@ -515,7 +516,7 @@
                 <groupId>org.apache.james</groupId>
                 <artifactId>apache-james-mailbox-cassandra</artifactId>
                 <version>${mailbox.version}</version>
-                <scope>test</scope>
+                <type>test-jar</type>
             </dependency>
             <dependency>
                 <groupId>org.apache.james</groupId>
@@ -865,6 +866,11 @@
                 <scope>test</scope>
             </dependency>
 
+            <dependency>
+                <groupId>com.datastax.cassandra</groupId>
+                <artifactId>cassandra-driver-core</artifactId>
+                <version>${cassandra-driver-core.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>concurrent</groupId>
