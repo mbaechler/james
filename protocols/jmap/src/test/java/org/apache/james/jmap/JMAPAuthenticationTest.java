@@ -23,6 +23,7 @@ import static com.jayway.restassured.RestAssured.*;
 import static com.jayway.restassured.config.RestAssuredConfig.*;
 import static com.jayway.restassured.config.EncoderConfig.*;
 import static com.jayway.restassured.matcher.RestAssuredMatchers.*;
+import static org.hamcrest.Matchers.*;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
@@ -106,6 +107,44 @@ public class JMAPAuthenticationTest {
 			.post("/authentication")
 		.then()
 			.statusCode(400);
+	}
+	
+	@Test
+	public void mustReturnMalformedRequestWhenBodyIsEmpty() {
+		given()
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+		.when()
+			.post("/authentication")
+		.then()
+			.statusCode(400);
+	}
+	
+	@Test
+	public void mustReturnJsonResponse() {
+		given()
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+			.body("{\"username\": \"user@domain.tld\", \"clientName\": \"Mozilla Thunderbird\", \"clientVersion\": \"42.0\", \"deviceName\": \"Joe Blogg’s iPhone\"}")
+		.when()
+			.post("/authentication")
+		.then()
+			.statusCode(200)
+			.contentType(ContentType.JSON);
+	}
+	
+	@Test
+	public void getContinuationTokenWhenValidResquest() {
+		given()
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+			.body("{\"username\": \"user@domain.tld\", \"clientName\": \"Mozilla Thunderbird\", \"clientVersion\": \"42.0\", \"deviceName\": \"Joe Blogg’s iPhone\"}")
+		.when()
+			.post("/authentication")
+		.then()
+			.statusCode(200)
+			.body("continuationToken", isA(String.class))
+			.body("methods", hasItem("password"));
 	}
 	
 	@After
