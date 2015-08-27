@@ -37,7 +37,6 @@ import org.apache.james.rrt.hbase.def.HRecipientRewriteTable;
 import org.apache.james.rrt.lib.AbstractRecipientRewriteTable;
 import org.apache.james.rrt.lib.Mappings;
 import org.apache.james.rrt.lib.MappingsImpl;
-import org.apache.james.rrt.lib.MappingsImpl.Builder;
 import org.apache.james.rrt.lib.RecipientRewriteTableUtil;
 import org.apache.james.system.hbase.TablePool;
 import org.slf4j.Logger;
@@ -106,7 +105,8 @@ public class HBaseRecipientRewriteTable extends AbstractRecipientRewriteTable {
         List<KeyValue> keyValues = result.getColumn(HRecipientRewriteTable.COLUMN_FAMILY_NAME,
                                                     HRecipientRewriteTable.COLUMN.MAPPING);
         if (keyValues.size() > 0) {
-            return list.addAll(MappingsImpl.fromRawString(Bytes.toString(keyValues.get(0).getValue())));
+            return MappingsImpl.from(list)
+                    .addAll(MappingsImpl.fromRawString(Bytes.toString(keyValues.get(0).getValue()))).build();
         }
         return list;
     }
