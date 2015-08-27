@@ -696,6 +696,16 @@
             </dependency>
             <dependency>
                 <groupId>org.apache.james</groupId>
+                <artifactId>apache-jsieve-manager-mailet</artifactId>
+                <version>${jsieve.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.james</groupId>
+                <artifactId>apache-jsieve-manager-jsieve</artifactId>
+                <version>${jsieve.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.james</groupId>
                 <artifactId>apache-jsieve-manager-api</artifactId>
                 <version>${jsieve.version}</version>
             </dependency>
