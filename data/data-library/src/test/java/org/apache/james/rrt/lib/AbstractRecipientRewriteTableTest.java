@@ -18,15 +18,21 @@
  ****************************************************************/
 package org.apache.james.rrt.lib;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
+
 import org.apache.james.lifecycle.api.LifecycleUtil;
 import org.apache.james.rrt.api.RecipientRewriteTable;
 import org.apache.james.rrt.api.RecipientRewriteTable.ErrorMappingException;
 import org.apache.james.rrt.api.RecipientRewriteTableException;
 import org.junit.After;
-import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -294,6 +300,40 @@ public abstract class AbstractRecipientRewriteTableTest {
         }
 
     }
+    
+    @Test
+    public void sortMappingsShouldReturnNullWhenNull() {
+        assertNull(AbstractRecipientRewriteTable.sortMappings(null));
+    }
+
+    @Test
+    public void sortMappingsShouldReturnEmptyWhenEmpty() {
+        assertEquals("", AbstractRecipientRewriteTable.sortMappings(""));
+    }
+
+    @Test
+    public void sortMappingsShouldReturnSameStringWhenSingleDomainAlias() {
+        String singleDomainAlias = RecipientRewriteTable.ALIASDOMAIN_PREFIX + "first";
+        assertEquals(singleDomainAlias, AbstractRecipientRewriteTable.sortMappings(singleDomainAlias));
+    }
+     
+    @Test
+    public void sortMappingsShouldReturnSameStringWhenTwoDomainAliases() {
+        String firstAliasMapping = RecipientRewriteTable.ALIASDOMAIN_PREFIX + "first";
+        String secondAliasMapping = RecipientRewriteTable.ALIASDOMAIN_PREFIX + "second";
+        String mappings = RecipientRewriteTableUtil.CollectionToMapping(Arrays.asList(firstAliasMapping, secondAliasMapping));
+        assertEquals(mappings, AbstractRecipientRewriteTable.sortMappings(mappings));
+    }
+    
+    @Test
+    public void sortMappingsShouldPutDomainAliasFirstWhenVariousMappings() {
+        String regexMapping = RecipientRewriteTable.REGEX_PREFIX + "first";
+        String domainMapping = RecipientRewriteTable.ALIASDOMAIN_PREFIX + "second";
+        String inputMappings = RecipientRewriteTableUtil.CollectionToMapping(Arrays.asList(regexMapping, domainMapping));
+        String expectedMappings = RecipientRewriteTableUtil.CollectionToMapping(Arrays.asList(domainMapping, regexMapping));
+        assertEquals(expectedMappings, AbstractRecipientRewriteTable.sortMappings(inputMappings));
+    }
+
 
     protected abstract AbstractRecipientRewriteTable getRecipientRewriteTable() throws Exception;
 
