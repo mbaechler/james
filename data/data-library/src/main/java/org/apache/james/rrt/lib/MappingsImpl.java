@@ -56,7 +56,7 @@ public class MappingsImpl implements Mappings {
         }
 
         public Builder addAll(Mappings mappings) {
-            this.mappings.addAll(mappings);
+            this.mappings.addAll(mappings.asStrings());
             return this;
         }
         
@@ -73,8 +73,8 @@ public class MappingsImpl implements Mappings {
     }
     
     @Override
-    public Iterator<String> iterator() {
-        return mappings.iterator();
+    public Iterable<String> asStrings() {
+        return mappings;
     }
 
     @Override

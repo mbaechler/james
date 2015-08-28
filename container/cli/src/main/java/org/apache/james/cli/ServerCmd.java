@@ -175,7 +175,7 @@ public class ServerCmd {
             } else if (CmdType.LISTUSERDOMAINMAPPINGS.equals(cmdType)) {
                 if (cmdType.hasCorrectArguments(arguments.length)) {
                     Mappings userDomainMappings = probe.listUserDomainMappings(arguments[1], arguments[2]);
-                    sCmd.print(userDomainMappings, System.out);
+                    sCmd.print(userDomainMappings.asStrings(), System.out);
                 } else {
                     printUsage();
                     System.exit(1);
@@ -258,14 +258,14 @@ public class ServerCmd {
         out.println();
     }
     
-    public void print(Map<String, ? extends Iterable<String>> map, PrintStream out) {
+    public void print(Map<String, Mappings> map, PrintStream out) {
         if (map == null)
             return;
 
-        for (Entry<String, ? extends Iterable<String>> entry : map.entrySet()) {
+        for (Entry<String, Mappings> entry : map.entrySet()) {
             out.print(entry.getKey());
             out.print("=");
-            out.println(entry.getValue().toString());
+            out.println(entry.getValue().asStrings().toString());
         }
         out.println();
     }
