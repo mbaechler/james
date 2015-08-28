@@ -29,6 +29,7 @@ import org.apache.james.rrt.api.RecipientRewriteTable.ErrorMappingException;
 import org.apache.james.rrt.api.RecipientRewriteTableException;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -292,7 +293,48 @@ public abstract class AbstractRecipientRewriteTableTest {
         }
 
     }
+    
+    @Test
+    public void sortMappingsShouldReturnNullWhenNull() {
+        assertThat(AbstractRecipientRewriteTable.sortMappings(null)).isNull();
+    }
 
+    @Test
+    public void sortMappingsShouldReturnEmptyWhenEmpty() {
+        assertThat(AbstractRecipientRewriteTable.sortMappings("")).isEmpty();
+    }
+
+    @Test
+    public void sortMappingsShouldReturnSameStringWhenSingleDomainAlias() {
+        String singleDomainAlias = RecipientRewriteTable.ALIASDOMAIN_PREFIX + "first";
+        assertThat(AbstractRecipientRewriteTable.sortMappings(singleDomainAlias)).isEqualTo(singleDomainAlias);
+    }
+
+    @Ignore("order is not kept")
+    @Test
+    public void sortMappingsShouldReturnSameStringWhenTwoDomainAliases() {
+        MappingsImpl mappings = MappingsImpl.builder()
+            .add(RecipientRewriteTable.ALIASDOMAIN_PREFIX + "first")
+            .add(RecipientRewriteTable.ALIASDOMAIN_PREFIX + "second")
+            .build();
+        assertThat(AbstractRecipientRewriteTable.sortMappings(mappings.serialize())).isEqualTo(mappings.serialize());
+    }
+    
+    @Test
+    public void sortMappingsShouldPutDomainAliasFirstWhenVariousMappings() {
+        String regexMapping = RecipientRewriteTable.REGEX_PREFIX + "first";
+        String domainMapping = RecipientRewriteTable.ALIASDOMAIN_PREFIX + "second";
+        MappingsImpl mappings = MappingsImpl.builder()
+            .add(regexMapping)
+            .add(domainMapping)
+            .build();
+        assertThat(AbstractRecipientRewriteTable.sortMappings(mappings.serialize()))
+            .isEqualTo(MappingsImpl.builder()
+                        .add(domainMapping)
+                        .add(regexMapping)
+                        .build().serialize());
+    }
+    
     protected abstract AbstractRecipientRewriteTable getRecipientRewriteTable() throws Exception;
 
     protected abstract boolean addMapping(String user, String domain, String mapping, int type) throws

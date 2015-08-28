@@ -41,6 +41,8 @@ import org.apache.james.rrt.api.RecipientRewriteTableException;
 import org.apache.mailet.MailAddress;
 import org.slf4j.Logger;
 
+import com.google.common.annotations.VisibleForTesting;
+
 /**
  * 
  */
@@ -441,7 +443,10 @@ public abstract class AbstractRecipientRewriteTable implements RecipientRewriteT
     private String mapAddress(String user, String domain) throws RecipientRewriteTableException {
 
         String mappings = mapAddressInternal(user, domain);
+        return sortMappings(mappings);
+    }
 
+    @VisibleForTesting static String sortMappings(String mappings) {
         // check if we need to sort
         // TODO: Maybe we should just return the aliasdomain mapping
         if (mappings != null && mappings.contains(RecipientRewriteTable.ALIASDOMAIN_PREFIX)) {
