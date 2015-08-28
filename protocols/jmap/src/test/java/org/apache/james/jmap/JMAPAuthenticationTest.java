@@ -24,6 +24,7 @@ import static com.jayway.restassured.config.RestAssuredConfig.*;
 import static com.jayway.restassured.config.EncoderConfig.*;
 import static com.jayway.restassured.matcher.RestAssuredMatchers.*;
 import static org.hamcrest.Matchers.*;
+import static org.assertj.core.api.Assertions.*;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
@@ -121,6 +122,18 @@ public class JMAPAuthenticationTest {
 	}
 	
 	@Test
+	public void mustReturnMalformedRequestWhenBodyIsNotAcceptable() {
+		given()
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+			.body("{\"badAttributeName\": \"value\"}")
+		.when()
+			.post("/authentication")
+		.then()
+			.statusCode(400);
+	}
+	
+	@Test
 	public void mustReturnJsonResponse() {
 		given()
 			.contentType(ContentType.JSON)
@@ -134,7 +147,7 @@ public class JMAPAuthenticationTest {
 	}
 	
 	@Test
-	public void getContinuationTokenWhenValidResquest() {
+	public void methodShouldContainPasswordWhenValidResquest() {
 		given()
 			.contentType(ContentType.JSON)
 			.accept(ContentType.JSON)
@@ -143,8 +156,42 @@ public class JMAPAuthenticationTest {
 			.post("/authentication")
 		.then()
 			.statusCode(200)
-			.body("continuationToken", isA(String.class))
 			.body("methods", hasItem("password"));
+	}
+	
+	@Test
+	public void mustReturnContinuationTokenWhenValidResquest() {
+		given()
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+			.body("{\"username\": \"user@domain.tld\", \"clientName\": \"Mozilla Thunderbird\", \"clientVersion\": \"42.0\", \"deviceName\": \"Joe Blogg’s iPhone\"}")
+		.when()
+			.post("/authentication")
+		.then()
+			.statusCode(200)
+			.body("continuationToken", isA(String.class));
+	}
+	
+	@Test
+	public void mustReturnAuthenticationFailedWhenBadPassword() {
+		String continuationToken =
+		with()
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+			.body("{\"username\": \"user@domain.tld\", \"clientName\": \"Mozilla Thunderbird\", \"clientVersion\": \"42.0\", \"deviceName\": \"Joe Blogg’s iPhone\"}")
+		.post("/authentication")
+			.body()
+			.path("continuationToken")
+			.toString();
+		
+		given()
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+			.body("{\"token\": \"" + continuationToken + "\", \"method\": \"password\", \"password\": \"badpassword\"}")
+		.when()
+			.post("/authentication")
+		.then()
+			.statusCode(401);
 	}
 	
 	@After
