@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.StringTokenizer;
 
 import com.google.common.base.Function;
+import com.google.common.base.Joiner;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -117,6 +118,11 @@ public class MappingsImpl implements Mappings {
     @Override
     public Iterator<Mapping> iterator() {
         return mappings.iterator();
+    }
+    
+    @Override
+    public String serialize() {
+        return Joiner.on(';').join(asStrings());
     }
 
 }

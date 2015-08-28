@@ -13,4 +13,6 @@ public interface Mappings extends Iterable<Mapping> {
 
     Iterable<String> asStrings();
     
+    String serialize();
+    
 }

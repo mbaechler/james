@@ -265,7 +265,7 @@ public class ServerCmd {
         for (Entry<String, Mappings> entry : map.entrySet()) {
             out.print(entry.getKey());
             out.print("=");
-            out.println(entry.getValue().asStrings().toString());
+            out.println(entry.getValue().serialize());
         }
         out.println();
     }
