@@ -1,6 +1,7 @@
 package org.apache.james.rrt.lib;
 
 import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
 
 
 public class MappingImpl implements Mapping {
@@ -18,6 +19,17 @@ public class MappingImpl implements Mapping {
     @Override
     public String asString() {
         return mapping;
+    }
+    
+    @Override
+    public boolean hasDomain() {
+        return mapping.contains("@");
+    }
+    
+    @Override
+    public Mapping appendDomain(String domain) {
+        Preconditions.checkNotNull(domain);
+        return new MappingImpl(mapping + "@" + domain);
     }
     
     @Override
