@@ -1,7 +1,7 @@
 package org.apache.james.rrt.lib;
 
 
-public interface Mappings {
+public interface Mappings extends Iterable<Mapping> {
 
     boolean contains(String mapping);
 
