@@ -455,8 +455,8 @@ public abstract class AbstractRecipientRewriteTable implements RecipientRewriteT
 
             List<String> col = new ArrayList<String>(mapCol.size());
 
+            int i = 0;
             while (mapIt.hasNext()) {
-                int i = 0;
                 String mapping = mapIt.next();
 
                 if (mapping.startsWith(RecipientRewriteTable.ALIASDOMAIN_PREFIX)) {

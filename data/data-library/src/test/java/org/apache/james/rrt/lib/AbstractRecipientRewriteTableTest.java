@@ -310,7 +310,6 @@ public abstract class AbstractRecipientRewriteTableTest {
         assertThat(AbstractRecipientRewriteTable.sortMappings(singleDomainAlias)).isEqualTo(singleDomainAlias);
     }
 
-    @Ignore("order is not kept")
     @Test
     public void sortMappingsShouldReturnSameStringWhenTwoDomainAliases() {
         MappingsImpl mappings = MappingsImpl.builder()
