@@ -21,5 +21,7 @@ public interface Mappings extends Iterable<Mapping> {
     Mappings select(Type type);
 
     Mappings exclude(Type type);
+
+    Mapping getError();
     
 }
