@@ -1,5 +1,7 @@
 package org.apache.james.rrt.lib;
 
+import org.apache.james.rrt.api.RecipientRewriteTable;
+
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
@@ -13,6 +15,7 @@ public class MappingImpl implements Mapping {
     private final String mapping;
 
     public MappingImpl(String mapping) {
+        Preconditions.checkNotNull(mapping);
         this.mapping = mapping;
     }
     
@@ -30,6 +33,19 @@ public class MappingImpl implements Mapping {
     public Mapping appendDomain(String domain) {
         Preconditions.checkNotNull(domain);
         return new MappingImpl(mapping + "@" + domain);
+    }
+    
+    @Override
+    public Type getType() {
+        if (mapping.startsWith(RecipientRewriteTable.ALIASDOMAIN_PREFIX)) {
+            return Type.Domain;
+        } else if (mapping.startsWith(RecipientRewriteTable.REGEX_PREFIX)) {
+            return Type.Regex;
+        } else if (mapping.startsWith(RecipientRewriteTable.ERROR_PREFIX)) {
+            return Type.Error;
+        } else {
+            return Type.Address;
+        }
     }
     
     @Override
