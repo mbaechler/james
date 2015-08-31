@@ -19,16 +19,20 @@
 package org.apache.james.jmap;
 
 import static com.jayway.restassured.RestAssured.given;
-import static com.jayway.restassured.RestAssured.*;
-import static com.jayway.restassured.config.RestAssuredConfig.*;
-import static com.jayway.restassured.config.EncoderConfig.*;
-import static com.jayway.restassured.matcher.RestAssuredMatchers.*;
-import static org.hamcrest.Matchers.*;
-import static org.assertj.core.api.Assertions.*;
+import static com.jayway.restassured.RestAssured.with;
+import static com.jayway.restassured.config.EncoderConfig.encoderConfig;
+import static com.jayway.restassured.config.RestAssuredConfig.newConfig;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.isA;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+import org.apache.james.user.api.UsersRepository;
+import org.apache.james.user.api.UsersRepositoryException;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ServletHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,6 +44,8 @@ public class JMAPAuthenticationTest {
 	
 	private static final int RANDOM_PORT = 0;
 	private Server server;
+	
+	private UsersRepository mockedUsersRepository;
 
 	@Before
 	public void setup() throws Exception {
@@ -48,13 +54,18 @@ public class JMAPAuthenticationTest {
         ServletHandler handler = new ServletHandler();
         server.setHandler(handler);
         
-        handler.addServletWithMapping(AuthenticationServlet.class, "/*");
+        mockedUsersRepository = mock(UsersRepository.class);
+        AuthenticationServlet authenticationServlet = new AuthenticationServlet();
+        authenticationServlet.setUsersRepository(mockedUsersRepository);
+        ServletHolder servletHolder = new ServletHolder(authenticationServlet);
+        handler.addServletWithMapping(servletHolder, "/*");
  
         server.start();
 
         int localPort = ((ServerConnector)server.getConnectors()[0]).getLocalPort();
         RestAssured.port = localPort;
         RestAssured.config = newConfig().encoderConfig(encoderConfig().defaultContentCharset("UTF-8"));
+        
 	}
 	
 	@Test
@@ -192,6 +203,82 @@ public class JMAPAuthenticationTest {
 			.post("/authentication")
 		.then()
 			.statusCode(401);
+	}
+	
+	@Test
+	public void mustReturnAuthenticationFailedWhenUsersRepositoryException() throws Exception {
+		String continuationToken =
+		with()
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+			.body("{\"username\": \"user@domain.tld\", \"clientName\": \"Mozilla Thunderbird\", \"clientVersion\": \"42.0\", \"deviceName\": \"Joe Blogg’s iPhone\"}")
+		.post("/authentication")
+			.body()
+			.path("continuationToken")
+			.toString();
+		
+		when(mockedUsersRepository.test("username", "password"))
+			.thenThrow(new UsersRepositoryException("test"));
+	
+		given()
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+			.body("{\"token\": \"" + continuationToken + "\", \"method\": \"password\", \"password\": \"password\"}")
+		.when()
+			.post("/authentication")
+		.then()
+			.statusCode(401);
+	}
+	
+	@Test
+	public void mustReturnCreatedWhenGoodPassword() throws Exception {
+		String continuationToken =
+		with()
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+			.body("{\"username\": \"user@domain.tld\", \"clientName\": \"Mozilla Thunderbird\", \"clientVersion\": \"42.0\", \"deviceName\": \"Joe Blogg’s iPhone\"}")
+		.post("/authentication")
+			.body()
+			.path("continuationToken")
+			.toString();
+		
+		when(mockedUsersRepository.test("username", "password"))
+			.thenReturn(true);
+		
+		given()
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+			.body("{\"token\": \"" + continuationToken + "\", \"method\": \"password\", \"password\": \"password\"}")
+		.when()
+			.post("/authentication")
+		.then()
+			.statusCode(201);
+	}
+	
+	@Test
+	public void mustSendJsonContainingAccessTokenWhenGoodPassword() throws Exception {
+		String continuationToken =
+		with()
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+			.body("{\"username\": \"user@domain.tld\", \"clientName\": \"Mozilla Thunderbird\", \"clientVersion\": \"42.0\", \"deviceName\": \"Joe Blogg’s iPhone\"}")
+		.post("/authentication")
+			.body()
+			.path("continuationToken")
+			.toString();
+		
+		when(mockedUsersRepository.test("username", "password"))
+			.thenReturn(true);
+		
+		given()
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+			.body("{\"token\": \"" + continuationToken + "\", \"method\": \"password\", \"password\": \"password\"}")
+		.when()
+			.post("/authentication")
+		.then()
+			.contentType(ContentType.JSON)
+			.body("accessToken", isA(String.class));
 	}
 	
 	@After
