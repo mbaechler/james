@@ -18,8 +18,8 @@ public interface Mappings extends Iterable<Mapping> {
 
     boolean contains(Type type);
     
-    Mappings select(Type domain);
+    Mappings select(Type type);
 
-    Mappings exclude(Type domain);
+    Mappings exclude(Type type);
     
 }
