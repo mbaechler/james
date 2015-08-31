@@ -1,5 +1,6 @@
 package org.apache.james.rrt.lib;
 
+import org.apache.james.rrt.lib.Mapping.Type;
 
 public interface Mappings extends Iterable<Mapping> {
 
@@ -14,5 +15,11 @@ public interface Mappings extends Iterable<Mapping> {
     Iterable<String> asStrings();
     
     String serialize();
+
+    boolean contains(Type type);
+    
+    Mappings select(Type domain);
+
+    Mappings exclude(Type domain);
     
 }
