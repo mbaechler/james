@@ -18,16 +18,17 @@
  ****************************************************************/
 package org.apache.james;
 
+import com.google.inject.Injector;
 import org.apache.james.modules.mailbox.CassandraMailboxModule;
 import org.apache.james.modules.mailbox.CassandraSessionModule;
 import org.apache.james.modules.mailbox.ElasticSearchMailboxModule;
 import org.apache.james.modules.server.ActiveMQQueueModule;
+import org.apache.james.modules.server.CassandraDataModule;
 import org.apache.james.modules.server.DNSServiceModule;
-import org.apache.james.modules.server.JpaDomainListModule;
 import org.apache.james.modules.protocols.IMAPServerModule;
-import org.apache.james.modules.server.JpaUsersRepositoryModule;
 
 import com.google.inject.Guice;
+import org.apache.james.utils.ConfigurationsPerformer;
 
 public class CassandraJamesServer {
 
@@ -41,16 +42,16 @@ public class CassandraJamesServer {
         this(new ElasticSearchMailboxModule());
     }
 
-    public void start() {
-        Guice.createInjector(new CassandraMailboxModule(),
+    public void start() throws Exception {
+        Injector injector = Guice.createInjector(new CassandraMailboxModule(),
             new CassandraSessionModule(),
             elasticSearchMailboxModule,
-            new JpaUsersRepositoryModule(),
-            new JpaDomainListModule(),
+            new CassandraDataModule(),
             new DNSServiceModule(),
             new IMAPServerModule(),
             new ActiveMQQueueModule()
         );
+        injector.getInstance(ConfigurationsPerformer.class).initModules();
     }
 
     public void stop() {

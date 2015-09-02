@@ -21,6 +21,7 @@ package org.apache.james.modules.mailbox;
 import com.google.inject.Inject;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
+import org.apache.james.CassandraDataFeatures;
 import org.apache.james.backends.cassandra.components.CassandraFeatures;
 import org.apache.james.backends.cassandra.init.CassandraFeaturesComposite;
 import org.apache.james.backends.cassandra.init.ClusterFactory;
@@ -51,7 +52,7 @@ public class CassandraSessionModule extends AbstractModule {
     @Provides
     @Singleton
     CassandraFeatures provideCassandraModule() {
-        return new CassandraFeaturesComposite(new CassandraMailboxFeatures());
+        return new CassandraFeaturesComposite(new CassandraMailboxFeatures(), new CassandraDataFeatures());
     }
 
     @Provides
