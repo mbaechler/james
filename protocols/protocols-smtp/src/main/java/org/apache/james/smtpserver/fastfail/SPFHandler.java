@@ -98,7 +98,7 @@ public class SPFHandler implements JamesMessageHook, MailHook, RcptHook, Initial
      *            The DNSService
      */
     @Inject
-    public void setDNSService(@Named("dnsservice") DNSService dnsService) {
+    public void setDNSService(@Named(org.apache.james.dnsservice.api.DNSService.COMPONENT_NAME) DNSService dnsService) {
         spf = new SPF(dnsService, new SPFLogger());
     }
 

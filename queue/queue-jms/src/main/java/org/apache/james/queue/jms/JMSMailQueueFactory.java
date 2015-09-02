@@ -18,7 +18,6 @@
  ****************************************************************/
 package org.apache.james.queue.jms;
 
-import javax.annotation.Resource;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.jms.ConnectionFactory;
@@ -32,11 +31,12 @@ import org.apache.james.queue.library.AbstractMailQueueFactory;
  */
 public class JMSMailQueueFactory extends AbstractMailQueueFactory {
 
+    public static final String JMS_CONNECTION_COMPONENT_NAME = "jmsConnectionFactory";
+
     protected ConnectionFactory connectionFactory;
 
     @Inject
-    @Resource(name = "jmsConnectionFactory")
-    public void setConnectionFactory(@Named("jmsConnectionFactory") ConnectionFactory connectionFactory) {
+    public void setConnectionFactory(@Named(JMS_CONNECTION_COMPONENT_NAME) ConnectionFactory connectionFactory) {
         this.connectionFactory = connectionFactory;
     }
 

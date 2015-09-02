@@ -242,7 +242,7 @@ public abstract class AbstractRedirect extends GenericMailet {
     protected DNSService dns;
 
     @Inject
-    public void setDNSService(@Named("dnsservice") DNSService dns) {
+    public void setDNSService(@Named(DNSService.COMPONENT_NAME) DNSService dns) {
         this.dns = dns;
     }
 

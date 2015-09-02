@@ -40,12 +40,12 @@ public class SenderAuthIdentifyVerificationRcptHook extends AbstractSenderAuthId
     private UsersRepository users;
 
     @Inject
-    public final void setUsersRepository(@Named("usersrepository") UsersRepository users) {
+    public final void setUsersRepository(@Named(UsersRepository.COMPONENT_NAME) UsersRepository users) {
         this.users = users;
     }
 
     @Inject
-    public void setDomainList(@Named("domainlist") DomainList domains) {
+    public void setDomainList(@Named(DomainList.COMPONENT_NAME) DomainList domains) {
         this.domains = domains;
     }
 

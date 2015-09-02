@@ -32,6 +32,8 @@ import java.io.IOException;
  */
 public interface FileSystem {
 
+    static final String COMPONENT_NAME = "filesystem";
+
     /**
      * Prefix for loading of a filesystem based on the current directory
      */

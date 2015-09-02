@@ -59,7 +59,7 @@ public class FromRepository extends GenericMailet {
     private MailRepositoryStore mailStore;
 
     @Inject
-    public void setStore(@Named("mailrepositorystore")MailRepositoryStore mailStore) {
+    public void setStore(@Named(MailRepositoryStore.COMPONENT_NAME)MailRepositoryStore mailStore) {
         this.mailStore = mailStore;
     }
 

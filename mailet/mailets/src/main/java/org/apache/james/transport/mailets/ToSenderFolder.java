@@ -59,13 +59,11 @@ import org.apache.mailet.base.GenericMailet;
 public class ToSenderFolder extends GenericMailet {
 
     @Inject
-    @Resource(name = "usersrepository")
-    @Named("usersrepository")
+    @Named(UsersRepository.COMPONENT_NAME)
     private UsersRepository usersRepository;
 
     @Inject
-    @Resource(name = "mailboxmanager")
-    @Named("mailboxmanager")
+    @Named(MailboxManager.COMPONENT_NAME)
     private MailboxManager mailboxManager;
 
     private String folder;

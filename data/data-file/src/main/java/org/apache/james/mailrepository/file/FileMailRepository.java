@@ -72,7 +72,7 @@ public class FileMailRepository extends AbstractMailRepository {
     private FileSystem fileSystem;
 
     @Inject
-    public void setFileSystem(@Named("filesystem") FileSystem fileSystem) {
+    public void setFileSystem(@Named(FileSystem.COMPONENT_NAME) FileSystem fileSystem) {
         this.fileSystem = fileSystem;
     }
 

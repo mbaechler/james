@@ -86,17 +86,17 @@ public class JamesMailetContext implements MailetContext, LogEnabled, Configurab
     }
 
     @Inject
-    public void setDNSService(@Named("dnsservice")DNSService dns) {
+    public void setDNSService(@Named(DNSService.COMPONENT_NAME)DNSService dns) {
         this.dns = dns;
     }
 
     @Inject
-    public void setUsersRepository(@Named("usersrepository")UsersRepository localusers) {
+    public void setUsersRepository(@Named(UsersRepository.COMPONENT_NAME)UsersRepository localusers) {
         this.localusers = localusers;
     }
 
     @Inject
-    public void setDomainList(@Named("domainlist")DomainList domains) {
+    public void setDomainList(@Named(DomainList.COMPONENT_NAME)DomainList domains) {
         this.domains = domains;
     }
 

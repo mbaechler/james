@@ -162,8 +162,7 @@ public class RemoteDelivery extends GenericMailet implements Runnable {
     private static final Pattern PATTERN = Patterns.compilePatternUncheckedException(PATTERN_STRING);
 
     @Inject
-    @Named("dnsservice")
-    @Resource
+    @Named(DNSService.COMPONENT_NAME)
     private DNSService dnsServer;
 
     /**
@@ -265,12 +264,12 @@ public class RemoteDelivery extends GenericMailet implements Runnable {
     private boolean isSSLEnable = false;
 
     @Inject
-    public void setDomainList(@Named("domainlist") DomainList domainList) {
+    public void setDomainList(@Named(DomainList.COMPONENT_NAME) DomainList domainList) {
         this.domainList = domainList;
     }
 
     @Inject
-    public void setMailQueueFactory(@Named("mailqueuefactory") MailQueueFactory queueFactory) {
+    public void setMailQueueFactory(@Named(MailQueueFactory.COMPONENT_NAME) MailQueueFactory queueFactory) {
         this.queueFactory = queueFactory;
     }
 

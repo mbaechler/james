@@ -48,8 +48,7 @@ public class MailboxManagerManagement extends StandardMBean implements MailboxMa
     private Logger log;
 
     @Inject
-    @Resource(name = "mailboxmanager")
-    public void setMailboxManager(@Named("mailboxmanager") MailboxManager mailboxManager) {
+    public void setMailboxManager(@Named(MailboxManager.COMPONENT_NAME) MailboxManager mailboxManager) {
         this.mailboxManager = mailboxManager;
     }
 

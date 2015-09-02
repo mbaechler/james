@@ -40,7 +40,7 @@ public class SMTPServerFactory extends AbstractServerFactory {
     private FileSystem fileSystem;
 
     @Inject
-    public void setDnsService(@Named("dnsservice") DNSService dns) {
+    public void setDnsService(@Named(DNSService.COMPONENT_NAME) DNSService dns) {
         this.dns = dns;
     }
     

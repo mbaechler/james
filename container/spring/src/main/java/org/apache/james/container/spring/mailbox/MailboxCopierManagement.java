@@ -49,9 +49,8 @@ public class MailboxCopierManagement implements MailboxCopierManagementMBean, Ap
     private ApplicationContext context;
 
     @Inject
-    @Named("mailboxcopier")
-    @Resource(name = "mailboxcopier")
-    public void setMailboxCopier(MailboxCopier copier) {
+
+    public void setMailboxCopier(@Named(MailboxCopier.COMPONENT_NAME)MailboxCopier copier) {
         this.copier = copier;
     }
 

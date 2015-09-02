@@ -88,7 +88,7 @@ public class JamesMailSpooler implements Runnable, Disposable, Configurable, Log
     private int numDequeueThreads;
 
     @Inject
-    public void setMailQueueFactory(@Named("mailqueuefactory")MailQueueFactory queueFactory) {
+    public void setMailQueueFactory(@Named(MailQueueFactory.COMPONENT_NAME)MailQueueFactory queueFactory) {
         this.queueFactory = queueFactory;
     }
 

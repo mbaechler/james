@@ -31,7 +31,7 @@ public class JamesRcptCmdHandler extends RcptCmdHandler {
     private DomainList domainList;
 
     @Inject
-    public final void setDomainList(@Named("domainlist") DomainList domainList) {
+    public final void setDomainList(@Named(DomainList.COMPONENT_NAME) DomainList domainList) {
         this.domainList = domainList;
     }
 

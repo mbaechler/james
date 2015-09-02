@@ -68,12 +68,12 @@ abstract public class AbstractStorageQuota extends AbstractQuotaMatcher {
     private MailboxManager manager;
 
     @Inject
-    public void setMailboxManager(@Named("mailboxmanager")MailboxManager manager) {
+    public void setMailboxManager(@Named(MailboxManager.COMPONENT_NAME)MailboxManager manager) {
         this.manager = manager;
     }
 
     @Inject
-    public void setUsersRepository(@Named("usersrepository")UsersRepository localUsers) {
+    public void setUsersRepository(@Named(UsersRepository.COMPONENT_NAME)UsersRepository localUsers) {
         this.localUsers = localUsers;
     }
 

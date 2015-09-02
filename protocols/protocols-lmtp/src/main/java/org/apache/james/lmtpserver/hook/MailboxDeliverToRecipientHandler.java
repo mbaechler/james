@@ -52,12 +52,12 @@ public class MailboxDeliverToRecipientHandler implements DeliverToRecipientHook 
     private MailboxManager mailboxManager;
 
     @Inject
-    public final void setUsersRepository(@Named("usersrepository") UsersRepository users) {
+    public final void setUsersRepository(@Named(UsersRepository.COMPONENT_NAME) UsersRepository users) {
         this.users = users;
     }
 
     @Inject
-    public final void setMailboxManager(@Named("mailboxmanager") MailboxManager mailboxManager) {
+    public final void setMailboxManager(@Named(MailboxManager.COMPONENT_NAME) MailboxManager mailboxManager) {
         this.mailboxManager = mailboxManager;
     }
     

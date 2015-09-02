@@ -43,8 +43,7 @@ public class RecipientRewriteTableManagement extends StandardMBean implements Re
     }
 
     @Inject
-    @Resource(name = "recipientrewritetable")
-    public void setManageableRecipientRewriteTable(@Named("recipientrewritetable") RecipientRewriteTable rrt) {
+    public void setManageableRecipientRewriteTable(@Named(RecipientRewriteTable.COMPONENT_NAME) RecipientRewriteTable rrt) {
         this.rrt = rrt;
     }
 

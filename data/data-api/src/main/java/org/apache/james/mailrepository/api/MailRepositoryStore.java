@@ -23,6 +23,8 @@ import java.util.List;
 
 public interface MailRepositoryStore {
 
+    String COMPONENT_NAME = "mailrepositorystore";
+
     /**
      * Select the {@link MailRepository} for the given url
      * 

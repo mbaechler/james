@@ -71,7 +71,7 @@ public abstract class AbstractUsersRepository implements UsersRepository, LogEna
 
     @Inject
     @Resource
-    public void setDomainList(@Named("domainlist") DomainList domainList) {
+    public void setDomainList(@Named(DomainList.COMPONENT_NAME) DomainList domainList) {
         this.domainList = domainList;
     }
 

@@ -53,17 +53,17 @@ public class SieveMailet extends SieveMailboxMailet implements Poster {
     private String folder;
 
     @Inject
-    public void setUsersRepository(@Named("usersrepository") UsersRepository usersRepos) {
+    public void setUsersRepository(@Named(UsersRepository.COMPONENT_NAME) UsersRepository usersRepos) {
         this.usersRepos = usersRepos;
     }
 
     @Inject
-    public void setMailboxManager(@Named("mailboxmanager") MailboxManager mailboxManager) {
+    public void setMailboxManager(@Named(MailboxManager.COMPONENT_NAME) MailboxManager mailboxManager) {
         this.mailboxManager = mailboxManager;
     }
 
     @Inject
-    public void setFileSystem(@Named("filesystem") FileSystem fileSystem) {
+    public void setFileSystem(@Named(FileSystem.COMPONENT_NAME) FileSystem fileSystem) {
         this.fileSystem = fileSystem;
     }
 

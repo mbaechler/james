@@ -46,7 +46,7 @@ public abstract class AbstractRecipientRewriteTableMailet extends GenericMailet 
     private DomainList domainList;
 
     @Inject
-    public void setDomainList(@Named("domainlist") DomainList domainList) {
+    public void setDomainList(@Named(DomainList.COMPONENT_NAME) DomainList domainList) {
         this.domainList = domainList;
     }
 

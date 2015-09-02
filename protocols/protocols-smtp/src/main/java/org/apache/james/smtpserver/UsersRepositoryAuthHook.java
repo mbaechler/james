@@ -51,7 +51,7 @@ public class UsersRepositoryAuthHook implements AuthHook {
      *            the users to set
      */
     @Inject
-    public final void setUsersRepository(@Named("usersrepository") UsersRepository users) {
+    public final void setUsersRepository(@Named(UsersRepository.COMPONENT_NAME) UsersRepository users) {
         this.users = users;
     }
 
