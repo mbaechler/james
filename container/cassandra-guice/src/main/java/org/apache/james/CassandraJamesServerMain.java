@@ -24,6 +24,11 @@ import com.google.inject.util.Modules;
 import org.apache.james.modules.mailbox.CassandraMailboxModule;
 import org.apache.james.modules.mailbox.CassandraSessionModule;
 import org.apache.james.modules.mailbox.ElasticSearchMailboxModule;
+import org.apache.james.modules.protocols.IMAPServerModule;
+import org.apache.james.modules.protocols.LMTPServerModule;
+import org.apache.james.modules.protocols.POP3ServerModule;
+import org.apache.james.modules.protocols.ProtocolHandlerModule;
+import org.apache.james.modules.protocols.SMTPServerModule;
 import org.apache.james.modules.server.ActiveMQQueueModule;
 import org.apache.james.modules.server.CassandraDataModule;
 import org.apache.james.modules.server.DNSServiceModule;
@@ -35,6 +40,11 @@ public class CassandraJamesServerMain {
         new ElasticSearchMailboxModule(),
         new CassandraDataModule(),
         new DNSServiceModule(),
+        new IMAPServerModule(),
+        new ProtocolHandlerModule(),
+        new POP3ServerModule(),
+        new SMTPServerModule(),
+        new LMTPServerModule(),
         new ActiveMQQueueModule());
 
     public static void main(String[] args) throws Exception {
