@@ -21,9 +21,11 @@ package org.apache.james;
 import java.util.Properties;
 
 import javax.mail.AuthenticationFailedException;
+import javax.mail.MessagingException;
 import javax.mail.NoSuchProviderException;
 import javax.mail.Session;
 import javax.mail.Store;
+import javax.mail.Transport;
 
 import org.apache.james.mailbox.cassandra.CassandraClusterSingleton;
 import com.google.inject.util.Modules;
@@ -41,6 +43,10 @@ public class CassandraJamesServerTest {
 
     private static final CassandraClusterSingleton CASSANDRA = CassandraClusterSingleton.build();
     private static final int IMAP_PORT = 1143; // You need to be root (superuser) to bind to ports under 1024.
+    private static final int IMAP_PORT_SSL = 1993;
+    private static final int POP3_PORT = 1110;
+    private static final int SMTP_PORT = 1025;
+    private static final int LMTP_PORT = 1024;
 
     private CassandraJamesServer server;
     private TemporaryFolder temporaryFolder = new TemporaryFolder();
@@ -65,15 +71,62 @@ public class CassandraJamesServerTest {
 
     @Test (expected = AuthenticationFailedException.class)
     public void connectIMAPServerShouldThrowWhenNoCredentials() throws Exception {
-        store().connect();
+        IMAPstore(IMAP_PORT).connect();
     }
 
-    private Store store() throws NoSuchProviderException {
+    @Test (expected = AuthenticationFailedException.class)
+    public void connectOnSecondaryIMAPServerIMAPServerShouldThrowWhenNoCredentials() throws Exception {
+        IMAPstore(IMAP_PORT_SSL).connect();
+    }
+
+    @Test (expected = AuthenticationFailedException.class)
+    public void connectPOP3ServerShouldThrowWhenNoCredentials() throws Exception {
+        POP3store().connect();
+    }
+
+    @Test
+    public void connectSMTPServerShouldNotThrowWhenNoCredentials() throws Exception {
+        SMTPTransport().connect();
+    }
+
+    @Test(expected = MessagingException.class)
+    public void connectLMTPServerShouldNotThrowWhenNoCredentials() throws Exception {
+        LMTPTransport().connect();
+    }
+
+    private Store IMAPstore(int port) throws NoSuchProviderException {
         Properties properties = new Properties();
         properties.put("mail.imap.host", "localhost");
-        properties.put("mail.imap.port", String.valueOf(IMAP_PORT));
+        properties.put("mail.imap.port", String.valueOf(port));
         Session session = Session.getDefaultInstance(properties);
         session.setDebug(true);
         return session.getStore("imap");
+    }
+
+    private Store POP3store() throws NoSuchProviderException {
+        Properties properties = new Properties();
+        properties.put("mail.pop3.host", "localhost");
+        properties.put("mail.pop3.port", String.valueOf(POP3_PORT));
+        Session session = Session.getDefaultInstance(properties);
+        session.setDebug(true);
+        return session.getStore("pop3");
+    }
+
+    private Transport SMTPTransport() throws NoSuchProviderException {
+        Properties properties = new Properties();
+        properties.put("mail.smtp.host", "localhost");
+        properties.put("mail.smtp.port", String.valueOf(SMTP_PORT));
+        Session session = Session.getDefaultInstance(properties);
+        session.setDebug(true);
+        return session.getTransport("smtp");
+    }
+
+    private Transport LMTPTransport() throws NoSuchProviderException {
+        Properties properties = new Properties();
+        properties.put("mail.smtp.host", "localhost");
+        properties.put("mail.smtp.port", String.valueOf(LMTP_PORT));
+        Session session = Session.getDefaultInstance(properties);
+        session.setDebug(true);
+        return session.getTransport("smtp");
     }
 }
