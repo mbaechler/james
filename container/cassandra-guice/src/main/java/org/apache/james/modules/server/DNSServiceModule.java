@@ -18,26 +18,47 @@
  ****************************************************************/
 package org.apache.james.modules.server;
 
-import com.google.inject.Provides;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.inject.name.Named;
+import com.google.inject.multibindings.Multibinder;
 import org.apache.james.dnsservice.api.DNSService;
 import org.apache.james.dnsservice.dnsjava.DNSJavaService;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.name.Names;
+import org.apache.james.utils.ClassPathConfigurationProvider;
+import org.apache.james.utils.ConfigurationPerformer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DNSServiceModule extends AbstractModule {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(DNSServiceModule.class);
+
     @Override
     protected void configure() {
-
+        bind(DNSService.class).annotatedWith(Names.named("dnsservice")).to(DNSJavaService.class);
+        Multibinder.newSetBinder(binder(), ConfigurationPerformer.class).addBinding().to(DNSServiceConfigurationPerformer.class);
     }
 
-    @Provides
     @Singleton
-    @Named(DNSService.COMPONENT_NAME)
-    private DNSService provideDNSService() {
-        return new DNSJavaService();
+    public static class DNSServiceConfigurationPerformer implements ConfigurationPerformer {
+
+        private final ClassPathConfigurationProvider classPathConfigurationProvider;
+        private final DNSJavaService dnsService;
+
+        @Inject
+        public DNSServiceConfigurationPerformer(ClassPathConfigurationProvider classPathConfigurationProvider,
+                                                DNSJavaService dnsService) {
+            this.classPathConfigurationProvider = classPathConfigurationProvider;
+            this.dnsService = dnsService;
+        }
+
+        public void initModule() throws Exception {
+            dnsService.setLog(LOGGER);
+            dnsService.configure(classPathConfigurationProvider.getConfiguration("dnsservice"));
+            dnsService.init();
+        }
     }
+
 }
