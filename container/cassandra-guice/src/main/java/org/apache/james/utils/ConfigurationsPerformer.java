@@ -16,18 +16,26 @@
  * specific language governing permissions and limitations      *
  * under the License.                                           *
  ****************************************************************/
-package org.apache.james.modules.server;
 
-import org.apache.james.domainlist.api.DomainList;
-import org.apache.james.domainlist.jpa.JPADomainList;
+package org.apache.james.utils;
 
-import com.google.inject.AbstractModule;
+import com.google.inject.Inject;
 
-public class JpaDomainListModule extends AbstractModule {
+import java.util.Set;
 
-    @Override
-    protected void configure() {
-        JPADomainList jpaDomainList = new JPADomainList();
-        bind(DomainList.class).toInstance(jpaDomainList);
+public class ConfigurationsPerformer {
+
+    private final Set<ConfigurationPerformer> configurationPerformers;
+
+    @Inject
+    public ConfigurationsPerformer(Set<ConfigurationPerformer> configurationPerformers) throws Exception {
+        this.configurationPerformers = configurationPerformers;
     }
+
+    public void initModules() throws Exception {
+        for(ConfigurationPerformer configurationPerformer : configurationPerformers) {
+            configurationPerformer.initModule();
+        }
+    }
+
 }
