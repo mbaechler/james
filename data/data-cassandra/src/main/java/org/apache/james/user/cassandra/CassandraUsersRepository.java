@@ -36,6 +36,7 @@ import java.util.Optional;
 import java.util.stream.StreamSupport;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import org.apache.james.user.api.UsersRepositoryException;
 import org.apache.james.user.api.model.User;
@@ -49,6 +50,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.primitives.Ints;
 
+@Singleton
 public class CassandraUsersRepository extends AbstractUsersRepository {
 
     private static final String DEFAULT_ALGO_VALUE = "SHA1";
@@ -56,7 +58,7 @@ public class CassandraUsersRepository extends AbstractUsersRepository {
     private final Session session;
 
     @Inject
-    @VisibleForTesting CassandraUsersRepository(Session session) {
+    public CassandraUsersRepository(Session session) {
         this.session = session;
     }
     

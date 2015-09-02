@@ -16,18 +16,12 @@
  * specific language governing permissions and limitations      *
  * under the License.                                           *
  ****************************************************************/
-package org.apache.james.modules.server;
 
-import org.apache.james.user.api.UsersRepository;
-import org.apache.james.user.jpa.JPAUsersRepository;
+package org.apache.james.utils;
 
-import com.google.inject.AbstractModule;
 
-public class JpaUsersRepositoryModule extends AbstractModule {
+public interface ConfigurationPerformer {
 
-    @Override
-    protected void configure() {
-        JPAUsersRepository jpaUsersRepository = new JPAUsersRepository();
-        bind(UsersRepository.class).toInstance(jpaUsersRepository);
-    }
+    void initModule() throws Exception;
+
 }

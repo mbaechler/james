@@ -29,7 +29,6 @@ import org.apache.james.backends.cassandra.init.SessionWithInitializedTablesFact
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Session;
 import com.google.inject.AbstractModule;
-import org.apache.james.mailbox.cassandra.CassandraMailboxDataModel;
 import org.apache.james.utils.PropertiesReader;
 
 import java.util.Set;
@@ -51,8 +50,8 @@ public class CassandraSessionModule extends AbstractModule {
 
     @Provides
     @Singleton
-    CassandraDataModel provideCassandraModule() {
-        return new CassandraDataModelComposite(new CassandraMailboxDataModel());
+    CassandraDataModel provideCassandraModule(Set<CassandraDataModel> features) {
+        return new CassandraDataModelComposite(features);
     }
 
     @Provides
