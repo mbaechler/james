@@ -18,12 +18,12 @@
  ****************************************************************/
 package org.apache.james.modules.protocols;
 
-import java.net.InetSocketAddress;
+import javax.inject.Named;
 
-import javax.inject.Inject;
-
-import org.apache.commons.configuration.HierarchicalConfiguration;
-import org.apache.james.container.spring.filesystem.ResourceLoaderFileSystem;
+import com.google.inject.Inject;
+import com.google.inject.Provides;
+import com.google.inject.Singleton;
+import com.google.inject.multibindings.Multibinder;
 import org.apache.james.filesystem.api.FileSystem;
 import org.apache.james.imap.api.process.ImapProcessor;
 import org.apache.james.imap.decode.ImapDecoder;
@@ -31,74 +31,79 @@ import org.apache.james.imap.encode.ImapEncoder;
 import org.apache.james.imap.encode.main.DefaultImapEncoderFactory;
 import org.apache.james.imap.main.DefaultImapDecoderFactory;
 import org.apache.james.imap.processor.main.DefaultImapProcessorFactory;
-import org.apache.james.imapserver.netty.IMAPServer;
-import org.apache.james.imapserver.netty.IMAPServerMBean;
+import org.apache.james.imapserver.netty.IMAPServerFactory;
 import org.apache.james.mailbox.MailboxManager;
 import org.apache.james.mailbox.SubscriptionManager;
+import org.apache.james.utils.ClassPathConfigurationProvider;
+import org.apache.james.utils.ConfigurationPerformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.AbstractModule;
-import com.google.inject.Provider;
-import com.google.inject.name.Names;
 
 public class IMAPServerModule extends AbstractModule {
 
-    public static final int DEFAULT_IMAP_PORT = 143;
     private static final Logger LOGGER = LoggerFactory.getLogger(IMAPServerModule.class);
 
     @Override
     protected void configure() {
-        bind(IMAPServerMBean.class).toInstance(imapServer());
-
-        bind(ImapProcessor.class).annotatedWith(Names.named(ImapProcessor.COMPONENT_NAME)).toProvider(DefaultImapProcessorProvider.class);
-
-        ImapDecoder imapDecoder = DefaultImapDecoderFactory.createDecoder();
-        bind(ImapDecoder.class).annotatedWith(Names.named(ImapDecoder.COMPONENT_NAME)).toInstance(imapDecoder);
-
-        DefaultImapEncoderFactory defaultImapEncoderFactory = new DefaultImapEncoderFactory();
-        bind(ImapEncoder.class).annotatedWith(Names.named(ImapEncoder.COMPONENT_NAME)).toInstance(defaultImapEncoderFactory.buildImapEncoder());
-
-        ResourceLoaderFileSystem resourceLoaderFileSystem = new ResourceLoaderFileSystem();
-        bind(FileSystem.class).annotatedWith(Names.named(FileSystem.COMPONENT_NAME)).toInstance(resourceLoaderFileSystem);
+        Multibinder.newSetBinder(binder(), ConfigurationPerformer.class).addBinding().to(IMAPModuleConfigurationPerformer.class);
     }
 
-    protected int imapPort() {
-        return DEFAULT_IMAP_PORT;
+    @Provides
+    @Singleton
+    @Named(ImapProcessor.COMPONENT_NAME)
+    ImapProcessor provideImapProcessor(@Named(MailboxManager.COMPONENT_NAME) MailboxManager mailboxManager, SubscriptionManager subscriptionManager) {
+        return DefaultImapProcessorFactory.createXListSupportingProcessor(mailboxManager, subscriptionManager, null, 120, ImmutableSet.of("ACL", "MOVE"));
     }
 
-    private IMAPServer imapServer() {
-        try {
-            IMAPServer imapServer = new IMAPServer();
-            imapServer.setListenAddresses(new InetSocketAddress("0.0.0.0", imapPort()));
-            imapServer.setBacklog(200);
-
-            imapServer.doConfigure(new HierarchicalConfiguration());
-            imapServer.setLog(LOGGER);
-            imapServer.bind();
-            return imapServer;
-        } catch (Exception e) {
-            throw Throwables.propagate(e);
-        }
+    @Provides
+    @Singleton
+    @Named(ImapDecoder.COMPONENT_NAME)
+    ImapDecoder provideImapDecoder() {
+        return DefaultImapDecoderFactory.createDecoder();
     }
 
-    private static class DefaultImapProcessorProvider implements Provider<ImapProcessor> {
+    @Provides
+    @Singleton
+    @Named(ImapEncoder.COMPONENT_NAME)
+    ImapEncoder provideImapEncoder() {
+        return new DefaultImapEncoderFactory().buildImapEncoder();
+    }
 
-        private final MailboxManager mailboxManager;
-        private final SubscriptionManager subscriptionManager;
+    @Provides
+    @Singleton
+    IMAPServerFactory imapServerFactory(@Named(FileSystem.COMPONENT_NAME)FileSystem fileSystem,
+                                        @Named(ImapDecoder.COMPONENT_NAME) ImapDecoder imapDecoder,
+                                        @Named(ImapEncoder.COMPONENT_NAME) ImapEncoder imapEncoder,
+                                        @Named(ImapProcessor.COMPONENT_NAME) ImapProcessor imapProcessor) {
+        IMAPServerFactory imapServerFactory = new IMAPServerFactory();
+        imapServerFactory.setLog(LOGGER);
+        imapServerFactory.setImapDecoder(imapDecoder);
+        imapServerFactory.setImapEncoder(imapEncoder);
+        imapServerFactory.setImapProcessor(imapProcessor);
+        imapServerFactory.setFileSystem(fileSystem);
+        return imapServerFactory;
+    }
+
+    @Singleton
+    public static class IMAPModuleConfigurationPerformer implements ConfigurationPerformer {
+
+        private final ClassPathConfigurationProvider classPathConfigurationProvider;
+        private final IMAPServerFactory imapServerFactory;
 
         @Inject
-        private DefaultImapProcessorProvider(MailboxManager mailboxManager, SubscriptionManager subscriptionManager) {
-            this.mailboxManager = mailboxManager;
-            this.subscriptionManager = subscriptionManager;
+        public IMAPModuleConfigurationPerformer(ClassPathConfigurationProvider classPathConfigurationProvider, IMAPServerFactory imapServerFactory) {
+            this.classPathConfigurationProvider = classPathConfigurationProvider;
+            this.imapServerFactory = imapServerFactory;
         }
 
         @Override
-        public ImapProcessor get() {
-            return DefaultImapProcessorFactory.createXListSupportingProcessor(mailboxManager, subscriptionManager, null, 120, ImmutableSet.of("ACL", "MOVE"));
+        public void initModule() throws Exception {
+            imapServerFactory.setLog(LOGGER);
+            imapServerFactory.configure(classPathConfigurationProvider.getConfiguration("imapserver"));
+            imapServerFactory.init();
         }
-        
     }
 }
