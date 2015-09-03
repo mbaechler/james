@@ -5,7 +5,7 @@ import static com.datastax.driver.core.querybuilder.QueryBuilder.set;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.update;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.apache.james.CassandraDataModule;
+import org.apache.james.CassandraDataDataModel;
 import org.apache.james.backends.cassandra.CassandraClusterSingleton;
 import org.apache.james.user.api.UsersRepository;
 import org.apache.james.user.lib.AbstractUsersRepositoryTest;
@@ -24,7 +24,7 @@ public class CassandraUsersRepositoryTest extends AbstractUsersRepositoryTest {
     
     @Override
     protected UsersRepository getUsersRepository() throws Exception {
-        cassandra = CassandraClusterSingleton.create(new CassandraDataModule());
+        cassandra = CassandraClusterSingleton.create(new CassandraDataDataModel());
         return new CassandraUsersRepository(cassandra.getConf());
     }
 
