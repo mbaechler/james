@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.james.dnsservice.api.DNSService;
@@ -39,7 +40,7 @@ public class SMTPServerFactory extends AbstractServerFactory {
     private FileSystem fileSystem;
 
     @Inject
-    public void setDnsService(DNSService dns) {
+    public void setDnsService(@Named(DNSService.COMPONENT_NAME) DNSService dns) {
         this.dns = dns;
     }
     

@@ -29,6 +29,8 @@ import java.util.Collection;
  */
 public interface DNSService {
 
+    String COMPONENT_NAME = "dnsservice";
+
     /**
      * <p>
      * Return a prioritized unmodifiable list of host handling mail for the

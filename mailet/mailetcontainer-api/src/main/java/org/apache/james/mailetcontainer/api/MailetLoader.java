@@ -30,6 +30,8 @@ import javax.mail.MessagingException;
  */
 public interface MailetLoader {
 
+    String COMPONENT_NAME = "mailetloader";
+
     /**
      * Get a new {@link Mailet} instance for the given {@link MailetConfig}. The
      * returned {@link Mailet} needs to be fully initialized, so the returned

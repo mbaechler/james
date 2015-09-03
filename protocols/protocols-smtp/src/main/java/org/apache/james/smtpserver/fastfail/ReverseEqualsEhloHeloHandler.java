@@ -30,7 +30,7 @@ public class ReverseEqualsEhloHeloHandler extends org.apache.james.protocols.smt
     private DNSService dns;
 
     @Inject
-    public void setDNSService(@Named("dnsservice") DNSService dns) {
+    public void setDNSService(@Named(DNSService.COMPONENT_NAME) DNSService dns) {
         this.dns = dns;
     }
 

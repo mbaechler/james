@@ -28,6 +28,8 @@ import org.apache.james.protocols.api.handler.ProtocolHandler;
  */
 public interface ProtocolHandlerLoader {
 
+    String COMPONENT_NAME = "protocolhandlerloader";
+
     /**
      * Load the {@link ProtocolHandler} and make sure all lifecycle methods are called and all
      * needed services injected.

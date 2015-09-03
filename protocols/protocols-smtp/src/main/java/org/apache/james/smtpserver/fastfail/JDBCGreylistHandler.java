@@ -170,7 +170,7 @@ public class JDBCGreylistHandler extends AbstractGreylistHandler implements Init
     }
 
     @Inject
-    public final void setDNSService(@Named("dnsservice") DNSService dnsService) {
+    public final void setDNSService(@Named(DNSService.COMPONENT_NAME) DNSService dnsService) {
         this.dnsService = dnsService;
     }
 

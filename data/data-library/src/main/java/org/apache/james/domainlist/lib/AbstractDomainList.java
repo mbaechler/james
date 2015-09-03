@@ -52,7 +52,7 @@ public abstract class AbstractDomainList implements DomainList, LogEnabled, Conf
 
     @Inject
     @Resource
-    public void setDNSService(@Named("dnsservice") DNSService dns) {
+    public void setDNSService(@Named(DNSService.COMPONENT_NAME) DNSService dns) {
         this.dns = dns;
     }
 

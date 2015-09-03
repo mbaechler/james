@@ -33,19 +33,20 @@ import java.util.stream.StreamSupport;
 import javax.annotation.Resource;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.inject.Singleton;
 
 import org.apache.james.domainlist.api.DomainListException;
 import org.apache.james.domainlist.lib.AbstractDomainList;
 import org.apache.james.backends.cassandra.utils.CassandraConstants;
 import org.apache.james.tables.CassandraDomainsTable;
 
+@Singleton
 public class CassandraDomainList extends AbstractDomainList {
 
     private Session session;
 
     @Inject
-    @Resource
-    public void setSession(@Named("cassandra-session") Session session) {
+    public void setSession(Session session) {
         this.session = session;
     }
 

@@ -24,6 +24,8 @@ package org.apache.james.queue.api;
  */
 public interface MailQueueFactory {
 
+    String COMPONENT_NAME = "mailqueuefactory";
+
     /**
      * {@link MailQueue} which is used for spooling the messages
      */

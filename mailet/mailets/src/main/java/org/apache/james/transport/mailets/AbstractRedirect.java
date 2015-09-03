@@ -30,6 +30,7 @@ import org.apache.mailet.base.RFC2822Headers;
 import org.apache.mailet.base.RFC822DateFormat;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
@@ -241,7 +242,7 @@ public abstract class AbstractRedirect extends GenericMailet {
     protected DNSService dns;
 
     @Inject
-    public void setDNSService(DNSService dns) {
+    public void setDNSService(@Named(DNSService.COMPONENT_NAME) DNSService dns) {
         this.dns = dns;
     }
 

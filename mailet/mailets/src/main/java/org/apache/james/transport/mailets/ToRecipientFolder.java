@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.mail.MessagingException;
 
 import org.apache.commons.collections.iterators.IteratorChain;
@@ -52,14 +53,26 @@ import org.apache.mailet.base.GenericMailet;
  */
 public class ToRecipientFolder extends GenericMailet {
 
-    @Inject
     private MailboxManager mailboxManager;
-    
-    @Inject
+
     private UsersRepository usersRepository;
-    
-    @Inject
+
     private FileSystem fileSystem;
+
+    @Inject
+    public void setMailboxManager(@Named(MailboxManager.COMPONENT_NAME) MailboxManager mailboxManager) {
+        this.mailboxManager = mailboxManager;
+    }
+
+    @Inject
+    public void setUsersRepository(@Named(UsersRepository.COMPONENT_NAME) UsersRepository usersRepository) {
+        this.usersRepository = usersRepository;
+    }
+
+    @Inject
+    public void setFileSystem(@Named(FileSystem.COMPONENT_NAME) FileSystem fileSystem) {
+        this.fileSystem = fileSystem;
+    }
 
     private SieveMailet sieveMailet;  // Mailet that actually stores the message
 

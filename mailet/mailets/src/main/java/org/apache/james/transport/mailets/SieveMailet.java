@@ -21,6 +21,7 @@ package org.apache.james.transport.mailets;
 import java.util.Date;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
@@ -52,17 +53,17 @@ public class SieveMailet extends SieveMailboxMailet implements Poster {
     private String folder;
 
     @Inject
-    public void setUsersRepository(UsersRepository usersRepos) {
+    public void setUsersRepository(@Named(UsersRepository.COMPONENT_NAME) UsersRepository usersRepos) {
         this.usersRepos = usersRepos;
     }
 
     @Inject
-    public void setMailboxManager(MailboxManager mailboxManager) {
+    public void setMailboxManager(@Named(MailboxManager.COMPONENT_NAME) MailboxManager mailboxManager) {
         this.mailboxManager = mailboxManager;
     }
 
     @Inject
-    public void setFileSystem(FileSystem fileSystem) {
+    public void setFileSystem(@Named(FileSystem.COMPONENT_NAME) FileSystem fileSystem) {
         this.fileSystem = fileSystem;
     }
 

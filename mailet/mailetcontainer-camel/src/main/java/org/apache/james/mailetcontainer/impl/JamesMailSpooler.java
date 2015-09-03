@@ -38,6 +38,7 @@ import org.slf4j.Logger;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
+import javax.inject.Named;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -87,7 +88,7 @@ public class JamesMailSpooler implements Runnable, Disposable, Configurable, Log
     private int numDequeueThreads;
 
     @Inject
-    public void setMailQueueFactory(MailQueueFactory queueFactory) {
+    public void setMailQueueFactory(@Named(MailQueueFactory.COMPONENT_NAME)MailQueueFactory queueFactory) {
         this.queueFactory = queueFactory;
     }
 

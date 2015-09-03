@@ -24,6 +24,8 @@ package org.apache.james.domainlist.api;
  */
 public interface DomainList {
 
+    String COMPONENT_NAME = "domainlist";
+
     /**
      * Return array of domains which should be used as localdomains. Return null
      * if no domain is found.

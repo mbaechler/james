@@ -42,6 +42,7 @@ import org.apache.mailet.base.RFC2822Headers;
 import org.slf4j.Logger;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.mail.Address;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -85,17 +86,17 @@ public class JamesMailetContext implements MailetContext, LogEnabled, Configurab
     }
 
     @Inject
-    public void setDNSService(DNSService dns) {
+    public void setDNSService(@Named(DNSService.COMPONENT_NAME)DNSService dns) {
         this.dns = dns;
     }
 
     @Inject
-    public void setUsersRepository(UsersRepository localusers) {
+    public void setUsersRepository(@Named(UsersRepository.COMPONENT_NAME)UsersRepository localusers) {
         this.localusers = localusers;
     }
 
     @Inject
-    public void setDomainList(DomainList domains) {
+    public void setDomainList(@Named(DomainList.COMPONENT_NAME)DomainList domains) {
         this.domains = domains;
     }
 

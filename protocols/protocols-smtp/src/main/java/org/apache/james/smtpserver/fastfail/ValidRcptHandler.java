@@ -66,7 +66,7 @@ public class ValidRcptHandler extends AbstractValidRcptHandler implements Initia
      *            the users to set
      */
     @Inject
-    public final void setUsersRepository(@Named("usersrepository") UsersRepository users) {
+    public final void setUsersRepository(@Named(UsersRepository.COMPONENT_NAME) UsersRepository users) {
         this.users = users;
     }
 
@@ -77,12 +77,12 @@ public class ValidRcptHandler extends AbstractValidRcptHandler implements Initia
      *            the tableStore to set
      */
     @Inject
-    public final void setRecipientRewriteTable(RecipientRewriteTable vut) {
+    public final void setRecipientRewriteTable(@Named(RecipientRewriteTable.COMPONENT_NAME) RecipientRewriteTable vut) {
         this.vut = vut;
     }
 
     @Inject
-    public void setDomainList(@Named("domainlist") DomainList domains) {
+    public void setDomainList(@Named(DomainList.COMPONENT_NAME) DomainList domains) {
         this.domains = domains;
     }
     

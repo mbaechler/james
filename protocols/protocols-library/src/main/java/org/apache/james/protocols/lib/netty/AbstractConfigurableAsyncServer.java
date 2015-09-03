@@ -117,7 +117,7 @@ public abstract class AbstractConfigurableAsyncServer extends AbstractAsyncServe
     private MBeanServer mbeanServer;
 
     @Inject
-    public final void setFileSystem(@Named("filesystem") FileSystem filesystem) {
+    public final void setFileSystem(@Named(FileSystem.COMPONENT_NAME) FileSystem filesystem) {
         this.fileSystem = filesystem;
     }
 

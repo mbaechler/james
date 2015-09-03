@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.StringTokenizer;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.mail.MessagingException;
 
 import org.apache.james.dnsservice.api.DNSService;
@@ -57,7 +58,7 @@ public class InSpammerBlacklist extends GenericMatcher {
     private DNSService dnsServer;
 
     @Inject
-    public void setDNSService(DNSService dnsService) {
+    public void setDNSService(@Named(DNSService.COMPONENT_NAME) DNSService dnsService) {
         this.dnsServer = dnsService;
     }
 

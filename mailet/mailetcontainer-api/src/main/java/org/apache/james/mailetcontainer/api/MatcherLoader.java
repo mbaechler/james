@@ -30,6 +30,8 @@ import javax.mail.MessagingException;
  */
 public interface MatcherLoader {
 
+    String COMPONENT_NAME = "matcherloader";
+
     /**
      * Get a new {@link Matcher} for the given {@link MatcherConfig}. The
      * returned {@link Matcher} needs to be fully initialized, so the returned

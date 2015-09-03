@@ -26,6 +26,8 @@ import java.util.Map;
  */
 public interface RecipientRewriteTable {
 
+    String COMPONENT_NAME = "recipientrewritetable";
+
     /**
      * The prefix which is used for error mappings
      */

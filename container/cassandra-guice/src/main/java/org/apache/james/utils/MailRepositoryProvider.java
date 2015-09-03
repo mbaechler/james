@@ -16,34 +16,14 @@
  * specific language governing permissions and limitations      *
  * under the License.                                           *
  ****************************************************************/
-package org.apache.james.container.spring.mailbox;
 
-import java.util.Map;
+package org.apache.james.utils;
 
-import org.apache.james.mailbox.MailboxManager;
+import org.apache.james.mailrepository.api.MailRepository;
 
-/**
- * Allow to copy {@link MailboxManager} contents from one to the other via JMX
- */
-public interface MailboxCopierManagementMBean {
+import javax.inject.Provider;
 
-    /**
-     * Return a {@link Map} which contains the bean name of the registered
-     * {@link MailboxManager} instances as keys and the classname of them as
-     * values
-     * 
-     * @return managers
-     */
-    Map<String, String> getMailboxManagerBeans();
+public interface MailRepositoryProvider extends Provider<MailRepository> {
 
-    /**
-     * Copy from srcBean to dstBean all messages
-     * 
-     * @param srcBean
-     * @param dstBean
-     * @throws Exception
-     *             if copying failed
-     */
-    void copy(String srcBean, String dstBean) throws Exception;
-
+    String canonicalName();
 }

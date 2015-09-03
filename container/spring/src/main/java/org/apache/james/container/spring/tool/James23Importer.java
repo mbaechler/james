@@ -56,28 +56,28 @@ public class James23Importer implements LogEnabled {
      * James 3.0 users repository.
      */
     @Inject
-    @Named("usersrepository")
+    @Named(UsersRepository.COMPONENT_NAME)
     private UsersRepository james30UsersRepository;
 
     /**
      * James 3.0 users repository.
      */
     @Inject
-    @Named("mailrepositorystore")
+    @Named(MailRepositoryStore.COMPONENT_NAME)
     private MailRepositoryStore mailRepositoryStore;
 
     /**
      * James 3.0 domain list.
      */
     @Inject
-    @Named("domainlist")
+    @Named(DomainList.COMPONENT_NAME)
     private DomainList domainList;
 
     /**
      * The mailbox manager needed to copy the mails to.
      */
     @Inject
-    @Named("mailboxmanager")
+    @Named(MailboxManager.COMPONENT_NAME)
     private MailboxManager mailboxManager;
 
     /**

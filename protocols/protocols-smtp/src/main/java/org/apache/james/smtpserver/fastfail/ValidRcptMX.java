@@ -90,7 +90,7 @@ public class ValidRcptMX implements InitializingLifecycleAwareProtocolHandler, R
      * @param dnsService the dnsService to set
      */
     @Inject
-    public final void setDNSService(@Named("dnsservice") DNSService dnsService) {
+    public final void setDNSService(@Named(DNSService.COMPONENT_NAME) DNSService dnsService) {
         this.dnsService = dnsService;
     }
 

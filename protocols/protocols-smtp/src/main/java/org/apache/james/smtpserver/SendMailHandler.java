@@ -44,7 +44,7 @@ public class SendMailHandler implements JamesMessageHook {
     private MailQueueFactory queueFactory;
 
     @Inject
-    public void setMailQueueFactory(@Named("mailqueuefactory") MailQueueFactory queueFactory) {
+    public void setMailQueueFactory(@Named(MailQueueFactory.COMPONENT_NAME) MailQueueFactory queueFactory) {
         this.queueFactory = queueFactory;
     }
 

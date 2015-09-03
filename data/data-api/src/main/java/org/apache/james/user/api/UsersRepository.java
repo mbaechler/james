@@ -30,6 +30,8 @@ import org.apache.james.user.api.model.User;
  */
 public interface UsersRepository {
 
+    String COMPONENT_NAME = "usersrepository";
+
     /**
      * Adds a user to the repository with the specified password
      * 

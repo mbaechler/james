@@ -32,6 +32,7 @@ import org.apache.james.mailetcontainer.api.MatcherLoader;
 import org.apache.james.mailetcontainer.lib.AbstractStateCompositeProcessor;
 import org.apache.mailet.Mail;
 import org.apache.mailet.MailetContext;
+import org.apache.mailet.Matcher;
 
 /**
  * Build up the Camel Routes by parsing the mailetcontainer.xml configuration
@@ -48,12 +49,12 @@ public class CamelCompositeProcessor extends AbstractStateCompositeProcessor imp
     private MailetLoader mailetLoader;
 
     @Inject
-    public void setMatcherLoader(@Named("matcherloader") MatcherLoader matcherLoader) {
+    public void setMatcherLoader(@Named(MatcherLoader.COMPONENT_NAME) MatcherLoader matcherLoader) {
         this.matcherLoader = matcherLoader;
     }
 
     @Inject
-    public void setMailetLoader(@Named("mailetloader") MailetLoader mailetLoader) {
+    public void setMailetLoader(@Named(MailetLoader.COMPONENT_NAME) MailetLoader mailetLoader) {
         this.mailetLoader = mailetLoader;
     }
 
