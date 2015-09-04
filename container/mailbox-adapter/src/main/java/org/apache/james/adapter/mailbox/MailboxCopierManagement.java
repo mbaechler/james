@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations      *
  * under the License.                                           *
  ****************************************************************/
-package org.apache.james.container.spring.mailbox;
+package org.apache.james.adapter.mailbox;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -31,14 +31,11 @@ import org.apache.james.mailbox.copier.MailboxCopier;
 import org.apache.james.mailbox.exception.MailboxException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 
 /**
  * {@link MailboxCopier} support via JMX
  */
-public class MailboxCopierManagement implements MailboxCopierManagementMBean, ApplicationContextAware {
+public class MailboxCopierManagement implements MailboxCopierManagementMBean {
 
     /**
      * The Logger.
@@ -46,7 +43,7 @@ public class MailboxCopierManagement implements MailboxCopierManagementMBean, Ap
     private static final Logger log = LoggerFactory.getLogger(MailboxCopierManagement.class.getName());
 
     private MailboxCopier copier;
-    private ApplicationContext context;
+    private MailboxManagerResolver resolver;
 
     @Inject
     @Named("mailboxcopier")
@@ -55,16 +52,19 @@ public class MailboxCopierManagement implements MailboxCopierManagementMBean, Ap
         this.copier = copier;
     }
 
+    @Inject
+    public void setMailboxManagerResolver(MailboxManagerResolver resolver) {
+        this.resolver = resolver;
+    }
+    
     /**
      * @see
      * org.apache.james.container.spring.mailbox.MailboxCopierManagementMBean
      * #getMailboxManagerBeans()
      */
     public Map<String, String> getMailboxManagerBeans() {
-
         Map<String, String> bMap = new HashMap<String, String>();
-
-        Map<String, MailboxManager> beans = context.getBeansOfType(MailboxManager.class);
+        Map<String, MailboxManager> beans = resolver.getMailboxManagerBeans();
 
         for (Map.Entry<String, MailboxManager> entry : beans.entrySet()) {
             String name = entry.getValue().getClass().getName();
@@ -72,7 +72,6 @@ public class MailboxCopierManagement implements MailboxCopierManagementMBean, Ap
         }
 
         return bMap;
-
     }
 
     /**
@@ -84,8 +83,8 @@ public class MailboxCopierManagement implements MailboxCopierManagementMBean, Ap
         if (srcBean.equals(dstBean))
             throw new IllegalArgumentException("srcBean and dstBean can not have the same name!");
         try {
-            copier.copyMailboxes(context.getBean(srcBean, MailboxManager.class), context.getBean(dstBean, MailboxManager.class));
-        } catch (BeansException e) {
+            copier.copyMailboxes(resolver.resolveMailboxManager(srcBean), resolver.resolveMailboxManager(dstBean));
+        } catch (MailboxManagerResolverException e) {
             log.error("An exception occured during the copy process", e);
             throw new Exception(e.getMessage());
         } catch (MailboxException e) {
@@ -96,14 +95,5 @@ public class MailboxCopierManagement implements MailboxCopierManagementMBean, Ap
             throw new Exception(e.getMessage());
         }
     }
-
-    /**
-     * @see
-     * org.springframework.context.ApplicationContextAware#setApplicationContext
-     * (org.springframework.context.ApplicationContext)
-     */
-    public void setApplicationContext(ApplicationContext context) throws BeansException {
-        this.context = context;
-    }
-
+    
 }

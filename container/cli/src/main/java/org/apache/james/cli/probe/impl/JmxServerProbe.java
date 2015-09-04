@@ -18,12 +18,9 @@
  ****************************************************************/
 package org.apache.james.cli.probe.impl;
 
-import org.apache.james.adapter.mailbox.MailboxManagerManagementMBean;
-import org.apache.james.cli.probe.ServerProbe;
-import org.apache.james.container.spring.mailbox.MailboxCopierManagementMBean;
-import org.apache.james.domainlist.api.DomainListManagementMBean;
-import org.apache.james.rrt.api.RecipientRewriteTableManagementMBean;
-import org.apache.james.user.api.UsersRepositoryManagementMBean;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Map;
 
 import javax.management.MBeanServerConnection;
 import javax.management.MBeanServerInvocationHandler;
@@ -32,9 +29,13 @@ import javax.management.ObjectName;
 import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.Map;
+
+import org.apache.james.adapter.mailbox.MailboxCopierManagementMBean;
+import org.apache.james.adapter.mailbox.MailboxManagerManagementMBean;
+import org.apache.james.cli.probe.ServerProbe;
+import org.apache.james.domainlist.api.DomainListManagementMBean;
+import org.apache.james.rrt.api.RecipientRewriteTableManagementMBean;
+import org.apache.james.user.api.UsersRepositoryManagementMBean;
 
 public class JmxServerProbe implements ServerProbe {
 
