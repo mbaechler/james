@@ -23,7 +23,6 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.multibindings.Multibinder;
-import com.google.inject.name.Names;
 import org.apache.james.filesystem.api.FileSystem;
 import org.apache.james.mailrepository.api.MailRepository;
 import org.apache.james.mailrepository.api.MailRepositoryStore;
@@ -32,8 +31,6 @@ import org.apache.james.utils.ClassPathConfigurationProvider;
 import org.apache.james.utils.ConfigurationPerformer;
 import org.apache.james.utils.JavaMailRepositoryStore;
 import org.apache.james.utils.MailRepositoryProvider;
-
-import javax.inject.Named;
 
 public class MailStoreRepositoryModule extends AbstractModule {
 
