@@ -16,34 +16,31 @@
  * specific language governing permissions and limitations      *
  * under the License.                                           *
  ****************************************************************/
-package org.apache.james.container.spring.mailbox;
 
-import java.util.Map;
+package org.apache.james.utils;
 
-import org.apache.james.mailbox.MailboxManager;
+import com.google.inject.Injector;
 
-/**
- * Allow to copy {@link MailboxManager} contents from one to the other via JMX
- */
-public interface MailboxCopierManagementMBean {
+public class GuiceGenericLoader<T> {
 
-    /**
-     * Return a {@link Map} which contains the bean name of the registered
-     * {@link MailboxManager} instances as keys and the classname of them as
-     * values
-     * 
-     * @return managers
-     */
-    Map<String, String> getMailboxManagerBeans();
+    private final Injector injector;
+    private final String defaultPackageName;
 
-    /**
-     * Copy from srcBean to dstBean all messages
-     * 
-     * @param srcBean
-     * @param dstBean
-     * @throws Exception
-     *             if copying failed
-     */
-    void copy(String srcBean, String dstBean) throws Exception;
+    public GuiceGenericLoader(Injector injector, String defaultPackageName) {
+        this.injector = injector;
+        this.defaultPackageName = defaultPackageName;
+    }
+
+    public T instanciate(String className) throws Exception {
+        Class<T> clazz = (Class<T>) ClassLoader.getSystemClassLoader().loadClass(constructFullName(className));
+        return injector.getInstance(clazz);
+    }
+
+    private String constructFullName(String name) {
+        if (! name.contains(".")) {
+            return defaultPackageName + name;
+        }
+        return name;
+    }
 
 }

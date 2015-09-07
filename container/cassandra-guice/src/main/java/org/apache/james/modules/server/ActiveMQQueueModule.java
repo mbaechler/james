@@ -16,20 +16,44 @@
  * specific language governing permissions and limitations      *
  * under the License.                                           *
  ****************************************************************/
-package org.apache.james.protocols.lib.lifecycle;
 
-import org.apache.commons.configuration.Configuration;
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.james.protocols.api.handler.LifecycleAwareProtocolHandler;
+package org.apache.james.modules.server;
 
-public interface InitializingLifecycleAwareProtocolHandler extends LifecycleAwareProtocolHandler {
-    
-    /**
-     * Init with the given {@link Configuration}
-     * 
-     * @param config
-     * @throws ConfigurationException
-     */
-    public void init(Configuration config) throws ConfigurationException;
-    
+import com.google.inject.AbstractModule;
+import com.google.inject.Inject;
+import com.google.inject.Provides;
+import com.google.inject.Singleton;
+import org.apache.james.queue.activemq.ActiveMQMailQueueFactory;
+import org.apache.james.queue.api.MailQueueFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.jms.ConnectionFactory;
+
+public class ActiveMQQueueModule extends AbstractModule {
+
+    private static Logger LOGGER = LoggerFactory.getLogger(ActiveMQQueueModule.class);
+
+    @Override
+    protected void configure() {
+
+    }
+
+    @Provides
+    @Singleton
+    ConnectionFactory provideEmbededActiveMQ(EmbeddedActiveMQ embeddedActiveMQ) {
+        return embeddedActiveMQ.getConnectionFactory();
+    }
+
+    @Provides
+    @Singleton
+    public MailQueueFactory createActiveMailQueueFactory(ConnectionFactory connectionFactory) {
+        ActiveMQMailQueueFactory result = new ActiveMQMailQueueFactory();
+        result.setUseJMX(true);
+        result.setConnectionFactory(connectionFactory);
+        result.setLog(LOGGER);
+        result.init();
+        return result;
+    }
+
 }
