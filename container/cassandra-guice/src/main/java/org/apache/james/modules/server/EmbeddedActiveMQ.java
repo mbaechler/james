@@ -32,12 +32,14 @@ import org.apache.activemq.plugin.StatisticsBrokerPlugin;
 import org.apache.activemq.store.amq.AMQPersistenceAdapter;
 import org.apache.james.queue.activemq.FileSystemBlobTransferPolicy;
 
+import javax.annotation.PreDestroy;
 import javax.jms.ConnectionFactory;
 
 @Singleton
 public class EmbeddedActiveMQ {
 
     private ActiveMQConnectionFactory activeMQConnectionFactory;
+    private BrokerService brokerService;
 
     @Inject private EmbeddedActiveMQ() {
         try {
@@ -50,6 +52,11 @@ public class EmbeddedActiveMQ {
 
     public ConnectionFactory getConnectionFactory() {
         return activeMQConnectionFactory;
+    }
+
+    @PreDestroy
+    public void stop() throws Exception {
+        brokerService.stop();
     }
 
     private ActiveMQConnectionFactory createActiveMQConnectionFactory(BlobTransferPolicy blobTransferPolicy) {
@@ -73,7 +80,7 @@ public class EmbeddedActiveMQ {
     }
 
     private void launchEmbeddedBroker() throws Exception {
-        BrokerService brokerService = new BrokerService();
+        brokerService = new BrokerService();
         brokerService.setBrokerName("james");
         brokerService.setUseJmx(false);
         brokerService.setPersistent(true);

@@ -20,7 +20,6 @@
 package org.apache.james.modules.server;
 
 import com.google.inject.AbstractModule;
-import com.google.inject.Inject;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import org.apache.james.queue.activemq.ActiveMQMailQueueFactory;
