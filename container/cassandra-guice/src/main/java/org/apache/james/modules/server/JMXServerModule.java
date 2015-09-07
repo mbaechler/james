@@ -36,7 +36,6 @@ import org.apache.james.rrt.api.RecipientRewriteTableManagementMBean;
 import org.apache.james.rrt.lib.RecipientRewriteTableManagement;
 import org.apache.james.user.api.UsersRepositoryManagementMBean;
 import org.apache.james.user.lib.UsersRepositoryManagement;
-import org.apache.james.utils.ClassPathConfigurationProvider;
 import org.apache.james.utils.ConfigurationPerformer;
 import org.apache.james.utils.MailboxCopierManagement;
 
