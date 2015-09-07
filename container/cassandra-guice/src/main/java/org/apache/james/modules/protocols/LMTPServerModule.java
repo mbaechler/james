@@ -21,18 +21,13 @@ package org.apache.james.modules.protocols;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
-import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.multibindings.Multibinder;
-import org.apache.james.filesystem.api.FileSystem;
 import org.apache.james.lmtpserver.netty.LMTPServerFactory;
-import org.apache.james.protocols.lib.handler.ProtocolHandlerLoader;
 import org.apache.james.utils.ClassPathConfigurationProvider;
 import org.apache.james.utils.ConfigurationPerformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.inject.Named;
 
 public class LMTPServerModule extends AbstractModule {
 

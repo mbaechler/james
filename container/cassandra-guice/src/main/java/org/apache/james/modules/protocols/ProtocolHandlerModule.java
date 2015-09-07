@@ -20,7 +20,6 @@
 package org.apache.james.modules.protocols;
 
 import com.google.inject.AbstractModule;
-import com.google.inject.name.Names;
 import org.apache.james.protocols.lib.handler.ProtocolHandlerLoader;
 import org.apache.james.filesystem.api.FileSystem;
 import org.apache.james.utils.GuiceProtocolHandlerLoader;
