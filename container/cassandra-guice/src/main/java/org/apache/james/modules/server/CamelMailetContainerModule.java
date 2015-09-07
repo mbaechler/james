@@ -24,7 +24,6 @@ import com.google.inject.Inject;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.multibindings.Multibinder;
-import com.google.inject.name.Names;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.james.dnsservice.api.DNSService;
 import org.apache.james.domainlist.api.DomainList;
@@ -43,8 +42,6 @@ import org.apache.james.utils.GuiceMatcherLoader;
 import org.apache.mailet.MailetContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.inject.Named;
 
 public class CamelMailetContainerModule extends AbstractModule {
 
