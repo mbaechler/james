@@ -86,6 +86,7 @@
 
         <module>protocols/fetchmail</module>
         <module>protocols/protocols-imap4</module>
+        <module>protocols/jmap</module>
         <module>protocols/protocols-library</module>
         <module>protocols/protocols-lmtp</module>
         <module>protocols/protocols-pop3</module>
