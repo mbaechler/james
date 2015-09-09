@@ -19,6 +19,7 @@
 package org.apache.james.jmap;
 
 import java.io.IOException;
+import java.time.ZonedDateTime;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -28,6 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.james.jmap.json.MultipleObjectMapperBuilder;
 import org.apache.james.jmap.model.AccessTokenRequest;
 import org.apache.james.jmap.model.AccessTokenResponse;
+import org.apache.james.jmap.model.ContinuationToken;
 import org.apache.james.jmap.model.ContinuationTokenRequest;
 import org.apache.james.jmap.model.ContinuationTokenResponse;
 import org.apache.james.user.api.UsersRepository;
@@ -98,7 +100,7 @@ public class AuthenticationServlet extends HttpServlet {
 		ContinuationTokenResponse continuationTokenResponse = ContinuationTokenResponse
 				.builder()
 				// TODO Answer a real token
-				.continuationToken("token")
+				.continuationToken(new ContinuationToken("fake", ZonedDateTime.now(), "fake"))
 				.methods(ContinuationTokenResponse.AuthenticationMethod.PASSWORD)
 				.build();
 		
