@@ -42,7 +42,7 @@ public class AccessTokenRequest {
 
 		private Builder() {}
 		
-		public Builder token(String token) throws MalformedContinuationTokenException, DateTimeException {
+		public Builder token(String token) throws MalformedContinuationTokenException {
 			this.token = ContinuationToken.fromString(token);
 			return this;
 		}
