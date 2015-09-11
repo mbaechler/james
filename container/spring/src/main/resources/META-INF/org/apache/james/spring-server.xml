@@ -226,7 +226,7 @@
         <property name="assembler">
             <bean class="org.springframework.jmx.export.assembler.InterfaceBasedMBeanInfoAssembler">
                 <property name="managedInterfaces"
-                          value="org.apache.james.fetchmail.FetchSchedulerMBean,org.apache.james.domainlist.api.DomainListManagementMBean,org.apache.james.dnsservice.api.DNSServiceMBean,org.apache.james.rrt.api.RecipientRewriteTableManagementMBean,org.apache.james.user.api.UsersRepositoryManagementMBean,org.apache.james.adapter.mailbox.MailboxManagerManagementMBean,org.apache.james.container.spring.mailbox.MailboxCopierManagementMBean,org.apache.james.mailetcontainer.api.jmx.MailSpoolerMBean,org.apache.james.container.spring.lifecycle.LogProviderManagementMBean"/>
+                          value="org.apache.james.fetchmail.FetchSchedulerMBean,org.apache.james.domainlist.api.DomainListManagementMBean,org.apache.james.dnsservice.api.DNSServiceMBean,org.apache.james.rrt.api.RecipientRewriteTableManagementMBean,org.apache.james.user.api.UsersRepositoryManagementMBean,org.apache.james.adapter.mailbox.MailboxManagerManagementMBean,org.apache.james.adapter.mailbox.MailboxCopierManagementMBean,org.apache.james.mailetcontainer.api.jmx.MailSpoolerMBean,org.apache.james.container.spring.lifecycle.LogProviderManagementMBean"/>
             </bean>
         </property>
     </bean>
@@ -235,7 +235,7 @@
     <bean id="recipientrewritetablemanagement" class="org.apache.james.rrt.lib.RecipientRewriteTableManagement"/>
     <bean id="domainlistmanagement" class="org.apache.james.domainlist.lib.DomainListManagement"/>
     <bean id="mailboxmanagermanagementbean" class="org.apache.james.adapter.mailbox.MailboxManagerManagement"/>
-    <bean id="mailboxcopiermanagement" class="org.apache.james.container.spring.mailbox.MailboxCopierManagement"/>
+    <bean id="mailboxcopiermanagement" class="org.apache.james.adapter.mailbox.MailboxCopierManagement"/>
     <!--
         <bean id="james23importermanagement" class="org.apache.james.container.spring.tool.James23ImporterManagement" />
     -->
