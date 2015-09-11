@@ -18,7 +18,8 @@
  ****************************************************************/
 package org.apache.james.cli.type;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.Test;
 
 /**
@@ -26,67 +27,130 @@ import org.junit.Test;
  */
 public class CmdTypeTest {
 
-    /**
-     * Test the hasCorrectArguments method.
-     */
     @Test
-    public void testHasCorrectArguments() {
-        CmdType cmd;
-        boolean result;
+    public void hasCorrectArgumentShouldBeFalseOnNegativeInput() {
+        assertThat(CmdType.ADDDOMAIN.hasCorrectArguments(-1)).isFalse();
+    }
+    
+    @Test
+    public void hasCorrectArgumentShouldBeTrueOnRightArgumentNumber() {
+        assertThat(CmdType.ADDDOMAIN.hasCorrectArguments(2)).isTrue();
+    }
+    
 
-        cmd = CmdType.ADDDOMAIN;
-
-        // Test bogus number
-        result = cmd.hasCorrectArguments(-1);
-        assertEquals(false, result);
-
-        // Test actual number
-        result = cmd.hasCorrectArguments(cmd.getArgumentCount());
-        assertEquals(true, result);
-
-        // Test known bad number
-        result = cmd.hasCorrectArguments(cmd.getArgumentCount() - 1);
-        assertEquals(false, result);
+    @Test
+    public void hasCorrectArgumentShouldBeFalseOnIncorrectArgumentNumber() {
+        assertThat(CmdType.ADDDOMAIN.hasCorrectArguments(1)).isFalse();
     }
 
-    /**
-     * Test the lookup method.
-     */
-    @Test
-    public void testLookup() {
-        CmdType result;
-
-        // Test happy path
-        result = CmdType.lookup(CmdType.ADDUSER.getCommand());
-        assertEquals(CmdType.ADDUSER, result);
-
-        result = CmdType.lookup(CmdType.REMOVEUSER.getCommand());
-        assertEquals(CmdType.REMOVEUSER, result);
-
-        result = CmdType.lookup(CmdType.LISTUSERS.getCommand());
-        assertEquals(CmdType.LISTUSERS, result);
-
-        result = CmdType.lookup(CmdType.ADDDOMAIN.getCommand());
-        assertEquals(CmdType.ADDDOMAIN, result);
-
-        result = CmdType.lookup(CmdType.REMOVEDOMAIN.getCommand());
-        assertEquals(CmdType.REMOVEDOMAIN, result);
-
-        result = CmdType.lookup(CmdType.LISTDOMAINS.getCommand());
-        assertEquals(CmdType.LISTDOMAINS, result);
-
-        result = CmdType.lookup(CmdType.SETPASSWORD.getCommand());
-        assertEquals(CmdType.SETPASSWORD, result);
-
-        // Test known bad value
-        result = CmdType.lookup("");
-        assertEquals(null, result);
-
-        result = CmdType.lookup("error");
-        assertEquals(null, result);
-
-        // Test null value
-        result = CmdType.lookup(null);
-        assertEquals(null, result);
+    @Test 
+    public void lookupAddUserShouldReturnEnumValue() {
+        assertThat(CmdType.lookup("adduser")).isEqualTo(CmdType.ADDUSER);
     }
+    
+    @Test 
+    public void lookupRemoveUserShouldReturnEnumValue() {
+        assertThat(CmdType.lookup("removeuser")).isEqualTo(CmdType.REMOVEUSER);
+    }
+    
+    @Test 
+    public void lookupListUsersShouldReturnEnumValue() {
+        assertThat(CmdType.lookup("listusers")).isEqualTo(CmdType.LISTUSERS);
+    }
+    
+    @Test 
+    public void lookupAddDomainShouldReturnEnumValue() {
+        assertThat(CmdType.lookup("adddomain")).isEqualTo(CmdType.ADDDOMAIN);
+    }
+    
+    @Test 
+    public void lookupRemoveDomainShouldReturnEnumValue() {
+        assertThat(CmdType.lookup("removedomain")).isEqualTo(CmdType.REMOVEDOMAIN);
+    }
+    
+    @Test 
+    public void lookupContainsDomainShouldReturnEnumValue() {
+        assertThat(CmdType.lookup("containsdomain")).isEqualTo(CmdType.CONTAINSDOMAIN);
+    }
+    
+    @Test 
+    public void lookupListDomainsShouldReturnEnumValue() {
+        assertThat(CmdType.lookup("listdomains")).isEqualTo(CmdType.LISTDOMAINS);
+    }
+    
+    @Test 
+    public void lookupListMappingsShouldReturnEnumValue() {
+        assertThat(CmdType.lookup("listmappings")).isEqualTo(CmdType.LISTMAPPINGS);
+    }
+    
+    @Test 
+    public void lookupListUserDomainMappingsShouldReturnEnumValue() {
+        assertThat(CmdType.lookup("listuserdomainmappings")).isEqualTo(CmdType.LISTUSERDOMAINMAPPINGS);
+    }
+    
+    @Test 
+    public void lookupAddAddressMappingShouldReturnEnumValue() {
+        assertThat(CmdType.lookup("addaddressmapping")).isEqualTo(CmdType.ADDADDRESSMAPPING);
+    }
+    
+    @Test 
+    public void lookupRemoveAddressMappingShouldReturnEnumValue() {
+        assertThat(CmdType.lookup("removeaddressmapping")).isEqualTo(CmdType.REMOVEADDRESSMAPPING);
+    }
+    
+    @Test 
+    public void lookupAddRegexMappingShouldReturnEnumValue() {
+        assertThat(CmdType.lookup("addregexmapping")).isEqualTo(CmdType.ADDREGEXMAPPING);
+    }
+    
+    @Test 
+    public void lookupRemoveRegexMappingShouldReturnEnumValue() {
+        assertThat(CmdType.lookup("removeregexmapping")).isEqualTo(CmdType.REMOVEREGEXMAPPING);
+    }
+    
+    @Test 
+    public void lookupSetPasswordShouldReturnEnumValue() {
+        assertThat(CmdType.lookup("setpassword")).isEqualTo(CmdType.SETPASSWORD);
+    }
+    
+    @Test 
+    public void lookupCopyMailboxShouldReturnEnumValue() {
+        assertThat(CmdType.lookup("copymailbox")).isEqualTo(CmdType.COPYMAILBOX);
+    }
+    
+    @Test 
+    public void lookupDeleteUserMailboxesShouldReturnEnumValue() {
+        assertThat(CmdType.lookup("deleteusermailboxes")).isEqualTo(CmdType.DELETEUSERMAILBOXES);
+    }
+
+    @Test 
+    public void lookupCreateMailboxShouldReturnEnumValue() {
+        assertThat(CmdType.lookup("createmailbox")).isEqualTo(CmdType.CREATEMAILBOX);
+    }
+
+    @Test 
+    public void lookupListUserMailboxesShouldReturnEnumValue() {
+        assertThat(CmdType.lookup("listusermailboxes")).isEqualTo(CmdType.LISTUSERMAILBOXES);
+    }
+
+    @Test 
+    public void lookupDeleteMailboxShouldReturnEnumValue() {
+        assertThat(CmdType.lookup("deletemailbox")).isEqualTo(CmdType.DELETEMAILBOX);
+    }
+
+    @Test 
+    public void lookupEmptyStringShouldReturnNull() {
+        assertThat(CmdType.lookup("")).isNull();
+    }
+
+    @Test 
+    public void lookupUnknownStringShouldReturnNull() {
+        assertThat(CmdType.lookup("error")).isNull();
+    }
+
+    @Test 
+    public void lookupNullShouldReturnNull() {
+        assertThat(CmdType.lookup(null)).isNull();
+    }
+    
 }
