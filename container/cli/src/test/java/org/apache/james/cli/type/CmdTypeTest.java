@@ -153,4 +153,9 @@ public class CmdTypeTest {
         assertThat(CmdType.lookup(null)).isNull();
     }
     
+    @Test
+    public void usageShouldOutputCommandNamesAndArguments() {
+        assertThat(CmdType.CREATEMAILBOX.getUsage()).isEqualTo("createmailbox <namespace> <user> <name>");
+    }
+    
 }
