@@ -37,7 +37,7 @@ public class JavaMailRepositoryStoreTest {
     @Before
     public void setUp() throws Exception {
         repositoryStore = new JavaMailRepositoryStore(Sets.newHashSet(new MailStoreRepositoryModule.FileMailRepositoryProvider(new JavaFileSystem())));
-        repositoryStore.configure(new ClassPathConfigurationProvider().getConfiguration("mailrepositorystore"));
+        repositoryStore.configure(new FileConfigurationProvider().getConfiguration("mailrepositorystore"));
         repositoryStore.init();
     }
 
@@ -65,7 +65,7 @@ public class JavaMailRepositoryStoreTest {
     public void configureShouldThrowWhenNonValidClassesAreProvided() throws Exception {
         try {
             repositoryStore = new JavaMailRepositoryStore(Sets.newHashSet(new MailStoreRepositoryModule.FileMailRepositoryProvider(new JavaFileSystem())));
-            repositoryStore.configure(new ClassPathConfigurationProvider().getConfiguration("fakemailrepositorystore"));
+            repositoryStore.configure(new FileConfigurationProvider().getConfiguration("fakemailrepositorystore"));
         } catch (Exception e) {
             fail("Unexpected failure : ", e);
         }

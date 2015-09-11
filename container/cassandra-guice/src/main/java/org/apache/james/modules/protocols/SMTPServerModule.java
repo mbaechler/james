@@ -19,15 +19,16 @@
 
 package org.apache.james.modules.protocols;
 
+import org.apache.james.smtpserver.netty.SMTPServerFactory;
+import org.apache.james.utils.ConfigurationPerformer;
+import org.apache.james.utils.ConfigurationProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.multibindings.Multibinder;
-import org.apache.james.smtpserver.netty.SMTPServerFactory;
-import org.apache.james.utils.ClassPathConfigurationProvider;
-import org.apache.james.utils.ConfigurationPerformer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class SMTPServerModule extends AbstractModule {
 
@@ -41,19 +42,19 @@ public class SMTPServerModule extends AbstractModule {
     @Singleton
     public static class SMTPModuleConfigurationPerformer implements ConfigurationPerformer {
 
-        private final ClassPathConfigurationProvider classPathConfigurationProvider;
+        private final ConfigurationProvider configurationProvider;
         private final SMTPServerFactory smtpServerFactory;
 
         @Inject
-        public SMTPModuleConfigurationPerformer(ClassPathConfigurationProvider classPathConfigurationProvider, SMTPServerFactory smtpServerFactory) {
-            this.classPathConfigurationProvider = classPathConfigurationProvider;
+        public SMTPModuleConfigurationPerformer(ConfigurationProvider configurationProvider, SMTPServerFactory smtpServerFactory) {
+            this.configurationProvider = configurationProvider;
             this.smtpServerFactory = smtpServerFactory;
         }
 
         @Override
         public void initModule() throws Exception {
             smtpServerFactory.setLog(LOGGER);
-            smtpServerFactory.configure(classPathConfigurationProvider.getConfiguration("smtpserver"));
+            smtpServerFactory.configure(configurationProvider.getConfiguration("smtpserver"));
             smtpServerFactory.init();
         }
     }
