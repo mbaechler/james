@@ -116,7 +116,7 @@ public abstract class AbstractConfigurableAsyncServer extends AbstractAsyncServe
     private MBeanServer mbeanServer;
 
     @Inject
-    public final void setFileSystem(KeystoreLoader keystoreLoader) {
+    public final void setKeystoreLoader(KeystoreLoader keystoreLoader) {
         this.keystoreLoader = keystoreLoader;
     }
 

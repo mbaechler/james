@@ -28,20 +28,21 @@ import org.apache.james.filesystem.api.FileSystem;
 import org.apache.james.imap.api.process.ImapProcessor;
 import org.apache.james.imap.decode.ImapDecoder;
 import org.apache.james.imap.encode.ImapEncoder;
+import org.apache.james.protocols.lib.KeystoreLoader;
 import org.apache.james.protocols.lib.netty.AbstractConfigurableAsyncServer;
 import org.apache.james.protocols.lib.netty.AbstractServerFactory;
 import org.slf4j.Logger;
 
 public class IMAPServerFactory extends AbstractServerFactory {
 
-    private FileSystem fileSystem;
+    private KeystoreLoader keystoreLoader;
     private ImapDecoder decoder;
     private ImapEncoder encoder;
     private ImapProcessor processor;
-    
+
     @Inject
-    public final void setFileSystem(FileSystem filesystem) {
-        this.fileSystem = filesystem;
+    public void setKeystoreLoader(KeystoreLoader keystoreLoader) {
+        this.keystoreLoader = keystoreLoader;
     }
 
     @Inject
@@ -73,7 +74,7 @@ public class IMAPServerFactory extends AbstractServerFactory {
         for (HierarchicalConfiguration serverConfig: configs) {
             IMAPServer server = createServer();
             server.setLog(log);
-            server.setFileSystem(fileSystem);
+            server.setKeystoreLoader(keystoreLoader);
             server.setImapDecoder(decoder);
             server.setImapEncoder(encoder);
             server.setImapProcessor(processor);

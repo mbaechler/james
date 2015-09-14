@@ -51,6 +51,7 @@ import org.apache.james.dnsservice.api.DNSService;
 import org.apache.james.domainlist.api.mock.SimpleDomainList;
 import org.apache.james.filesystem.api.mock.MockFileSystem;
 import org.apache.james.mailrepository.mock.MockMailRepositoryStore;
+import org.apache.james.protocols.lib.KeystoreLoader;
 import org.apache.james.protocols.lib.PortUtil;
 import org.apache.james.protocols.lib.mock.MockProtocolHandlerLoader;
 import org.apache.james.protocols.netty.AbstractChannelPipelineFactory;
@@ -191,13 +192,16 @@ public class SMTPServerTest {
     }
 
     protected void setUpSMTPServer() {
-        
+
+        KeystoreLoader keystoreLoader = new KeystoreLoader();
+        keystoreLoader.setFileSystem(fileSystem);
+
         Logger log = LoggerFactory.getLogger("SMTP");
         // slf4j can't set programmatically any log level. It's just a facade
         // log.setLevel(SimpleLog.LOG_LEVEL_ALL);
         smtpServer = createSMTPServer();
         smtpServer.setDnsService(dnsServer);
-        smtpServer.setFileSystem(fileSystem);
+        smtpServer.setKeystoreLoader(keystoreLoader);
         smtpServer.setProtocolHandlerLoader(chain);
         smtpServer.setLog(log);
 
