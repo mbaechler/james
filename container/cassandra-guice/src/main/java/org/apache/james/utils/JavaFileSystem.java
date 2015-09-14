@@ -41,7 +41,7 @@ public class JavaFileSystem implements FileSystem {
 
     @Override
     public File getBasedir() throws FileNotFoundException {
-        return new File("../");
+        return new File(".");
     }
 
     private String transformURL(String url) {
@@ -49,8 +49,8 @@ public class JavaFileSystem implements FileSystem {
             return "/" + url.substring(FILE_PROTOCOL_ABSOLUTE.length());
         }
         if (url.startsWith(FILE_PROTOCOL)) {
-            return "../" + url.substring(FILE_PROTOCOL.length());
+            return url.substring(FILE_PROTOCOL.length());
         }
-        return "../" + url;
+        return url;
     }
 }

@@ -53,7 +53,7 @@ public class ElasticSearchMailboxModule extends AbstractModule {
     @Provides
     @Singleton
     protected ClientProvider provideClientProvider(FileSystem fileSystem) throws ConfigurationException, FileNotFoundException {
-        PropertiesConfiguration propertiesReader = new PropertiesConfiguration(fileSystem.getFile("elasticsearch.properties"));
+        PropertiesConfiguration propertiesReader = new PropertiesConfiguration(fileSystem.getFile(System.getProperty("configuration.directory") + "/" + "elasticsearch.properties"));
         ClientProvider clientProvider = new ClientProviderImpl(propertiesReader.getString("elasticsearch.masterHost"),
             propertiesReader.getInt("elasticsearch.port"));
         IndexCreationFactory.createIndex(clientProvider,

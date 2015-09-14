@@ -22,6 +22,8 @@ package org.apache.james.utils;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.google.common.collect.Lists;
+
+import org.apache.commons.cli.MissingArgumentException;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.junit.Before;
@@ -43,7 +45,7 @@ public class FileConfigurationProviderTest {
     private FileConfigurationProvider configurationProvider;
 
     @Before
-    public void setUp() {
+    public void setUp() throws MissingArgumentException {
         configurationProvider = new FileConfigurationProvider();
     }
 

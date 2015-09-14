@@ -21,6 +21,8 @@ package org.apache.james;
 
 import com.google.inject.Module;
 import com.google.inject.util.Modules;
+
+import org.apache.commons.cli.MissingArgumentException;
 import org.apache.james.modules.mailbox.CassandraMailboxModule;
 import org.apache.james.modules.mailbox.CassandraSessionModule;
 import org.apache.james.modules.mailbox.ElasticSearchMailboxModule;
@@ -39,7 +41,9 @@ import org.apache.james.modules.server.SieveModule;
 
 public class CassandraJamesServerMain {
 
-    public static final Module defaultModule = Modules.combine(new CassandraMailboxModule(),
+    public static final Module defaultModule = Modules.combine(
+        new CommonServicesModule(),
+        new CassandraMailboxModule(),
         new CassandraSessionModule(),
         new ElasticSearchMailboxModule(),
         new CassandraDataModule(),
@@ -57,7 +61,12 @@ public class CassandraJamesServerMain {
 
     public static void main(String[] args) throws Exception {
         CassandraJamesServer server = new CassandraJamesServer(defaultModule);
-        server.start();
+        try {
+            server.start();
+        } catch (MissingArgumentException e) {
+            System.err.println("Missing argument");
+            e.printStackTrace();
+        }
     }
 
 }
