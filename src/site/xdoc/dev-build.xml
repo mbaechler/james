@@ -49,7 +49,7 @@
       <li>Get the source code using SVN - this method gives you access to the cutting edge code
           base.  Instructions on how to use SVN to get the James source code
           can be found <a href="http://www.apache.org/dev/version-control.html">here</a>.
-          Apache James Server beta1 repository is <a href="http://svn.apache.org/repos/asf/james/server/tags/james-server-3.0-beta4/">http://svn.apache.org/repos/asf/james/server/tags/james-server-3.0-beta4/</a>.</li>
+          Apache James Server beta4 repository is <a href="http://svn.apache.org/repos/asf/james/server/tags/james-server-3.0-beta4/">http://svn.apache.org/repos/asf/james/server/tags/james-server-3.0-beta4/</a>.</li>
       <li>For information, you can download all Apache James sources (server, mailbox, imap, mailet...) if you check out <a href="http://svn.apache.org/repos/asf/james/current">http://svn.apache.org/repos/asf/james/current/</a>.
          Watch out!: you will get a release, but what we call a "trunk", that is on constant development and debugging.</li>
     </ol>
@@ -84,7 +84,7 @@
       <li>compile - compiles the source code.</li>
       <li>test - run unit tests for James.</li>
       <li><b>package - generates all the James distributions, packed.
-      From the root directory, cd to 'container-spring/target' to have the build distribution.
+      From the root directory, cd to 'server/container/spring/target' to have the build distribution.
       Notice, for the latest trunk(revision 1430655+), a specific profile argument need to be set: '-Pwith-assembly'.
       The location of final distributions is also changed to 'JAMES_SRC_HOME/server/app/target'.</b></li>
       <li>javadocs:javadocs - builds the James javadocs.</li>
@@ -92,7 +92,7 @@
     </ul>
     </p>
     <p>For example, invoke <code>mvn package</code> to get a zip/tar of James distribution.</p>
-    <p>All built products are output in the <code>container-spring/target</code>
+    <p>All built products are output in the <code>server/container/spring/target</code>
       subdirectory of the James source directory.
       This directory will be deleted if you run build with the clean argument.</p>
     <p><strong>Warning!</strong> Any changes you've made in the 'dist' directory
@@ -150,11 +150,11 @@
       <p>You still have to prepare the following to be able to run from Eclipse:</p>
       <ol>
         <li>Copy the <code>context</code> folder, <code>log4j.properties</code>
-            and <code>META-INF</code> folder from <code>container-spring\src\main\config\james</code>
-             directory to a source folder of <code>container-spring</code> project (you can use for example a
+            and <code>META-INF</code> folder from <code>server/container/spring/src/main/config/james</code>
+             directory to a source folder of <code>james-server-spring</code> project (you can use for example a
              new folder called <code>stage</code> as Eclipse source folder).</li>
         <li>Copy all files (except context folder log4j.properties and META-INF/persistence.xml)
-            from <code>container-spring\src\main\config\james</code> folder to a <code>conf</code> folder
+            from <code>server/container/src/main/config/james</code> folder to a <code>conf</code> folder
             (<code>conf</code> folder must be a sub-folder of the JAMES_SRC_HOME directory where you made the check-out).
             As non-root privilege user, you may need to change the SMTP/IMAP/POP3 ports to values higher than 1024.</li>
          <li>For ease, you can also create 2 new eclipse projects to edit the files and visualize the created mails/store/...:
@@ -171,7 +171,7 @@
 
       <p>If you change a JPA Entity class, your will need to run 'mvn package'
           or add the following option to the VM argument of your run configuration
-          '-javaagent:my_home_folder/.m2/repository/org/apache/openjpa/openjpa/2.0.1/openjpa-2.0.1.jar'
+          '-javaagent:my_home_folder/.m2/repository/org/apache/openjpa/openjpa/2.2.1/openjpa-2.2.1.jar'
       </p>
 
     </subsection>

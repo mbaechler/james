@@ -98,8 +98,6 @@ There are multiple ways to start/deploy James Server:
 * as a web application (WAR) inside an application server (Apache Tomcat, Jetty, GlassFish)
 * inside an OSGi container - Apache Karaf (in progress)
 
-The preferred way is
-
 DNS Service
 ===========
 
