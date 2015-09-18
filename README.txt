@@ -1,6 +1,6 @@
 ### http://james.apache.org/server/3/ ###
 
-Thank you for testing Apache James Server 3.0-beta1!
+Thank you for testing Apache James Server 3.0-beta4!
 
   * What's new in 3.0-beta3 for end users
     - Numerous IMAP bug fixes (better client support, memory improvement, NIO and IO support...)
