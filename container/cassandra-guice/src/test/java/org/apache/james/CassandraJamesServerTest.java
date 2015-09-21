@@ -29,9 +29,9 @@ import java.nio.charset.Charset;
 import org.apache.james.mailbox.cassandra.CassandraClusterSingleton;
 import org.apache.james.mailbox.elasticsearch.EmbeddedElasticSearch;
 import org.apache.james.modules.TestElasticSearchModule;
+import org.apache.james.modules.TestWorkingDirectoryModule;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
@@ -39,7 +39,6 @@ import org.junit.rules.TemporaryFolder;
 
 import com.google.inject.util.Modules;
 
-@Ignore("ISSUE-23 - FIXME")
 public class CassandraJamesServerTest {
 
     private static final CassandraClusterSingleton CASSANDRA = CassandraClusterSingleton.build();
@@ -63,7 +62,8 @@ public class CassandraJamesServerTest {
         socketChannel = SocketChannel.open();
         CASSANDRA.ensureAllTables();
 
-        server = new CassandraJamesServer(Modules.override(CassandraJamesServerMain.defaultModule).with(new TestElasticSearchModule(embeddedElasticSearch)));
+        server = new CassandraJamesServer(Modules.override(CassandraJamesServerMain.defaultModule)
+                        .with(new TestElasticSearchModule(embeddedElasticSearch), new TestWorkingDirectoryModule()));
         server.start();
     }
 
