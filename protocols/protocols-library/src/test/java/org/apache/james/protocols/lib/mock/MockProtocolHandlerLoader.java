@@ -24,7 +24,8 @@ public class MockProtocolHandlerLoader implements ProtocolHandlerLoader{
         try {
             ProtocolHandler obj = create(name);
             injectResources(obj);
-            postConstruct(obj, config);
+            postConstruct(obj);
+            init(obj, config);
             synchronized (this) {
                 loaderRegistry.add(obj);
             }
@@ -67,16 +68,33 @@ public class MockProtocolHandlerLoader implements ProtocolHandlerLoader{
         loaderRegistry.clear();
     }
 
-    private void postConstruct(Object resource, Configuration config) throws IllegalAccessException, InvocationTargetException {
+    private void postConstruct(Object resource) throws IllegalAccessException, InvocationTargetException {
         Method[] methods = resource.getClass().getMethods();
         for (Method method : methods) {
             PostConstruct postConstructAnnotation = method.getAnnotation(PostConstruct.class);
             if (postConstructAnnotation != null) {
+                Object[] args = { };
+                method.invoke(resource, args);
+
+            }
+        }
+    }
+
+    private void init(Object resource, Configuration config) throws IllegalAccessException, InvocationTargetException {
+        Method[] methods = resource.getClass().getMethods();
+        for (Method method : methods) {
+            if (isInit(method)) {
                 Object[] args = { config };
                 method.invoke(resource, args);
 
             }
         }
+    }
+
+    private boolean isInit(Method method) {
+        return method.getName().equals("init")
+            && method.getParameterTypes().length == 1
+            && method.getParameterTypes()[0].equals(Configuration.class);
     }
 
     private void preDestroy(Object resource) throws IllegalAccessException, InvocationTargetException {

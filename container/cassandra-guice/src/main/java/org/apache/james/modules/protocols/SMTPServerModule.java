@@ -19,6 +19,7 @@
 
 package org.apache.james.modules.protocols;
 
+import org.apache.james.smtpserver.SendMailHandler;
 import org.apache.james.smtpserver.netty.SMTPServerFactory;
 import org.apache.james.utils.ConfigurationPerformer;
 import org.apache.james.utils.ConfigurationProvider;
@@ -44,11 +45,15 @@ public class SMTPServerModule extends AbstractModule {
 
         private final ConfigurationProvider configurationProvider;
         private final SMTPServerFactory smtpServerFactory;
+        private final SendMailHandler sendMailHandler;
 
         @Inject
-        public SMTPModuleConfigurationPerformer(ConfigurationProvider configurationProvider, SMTPServerFactory smtpServerFactory) {
+        public SMTPModuleConfigurationPerformer(ConfigurationProvider configurationProvider, 
+                SMTPServerFactory smtpServerFactory,
+                SendMailHandler sendMailHandler) {
             this.configurationProvider = configurationProvider;
             this.smtpServerFactory = smtpServerFactory;
+            this.sendMailHandler = sendMailHandler;
         }
 
         @Override
@@ -56,6 +61,7 @@ public class SMTPServerModule extends AbstractModule {
             smtpServerFactory.setLog(LOGGER);
             smtpServerFactory.configure(configurationProvider.getConfiguration("smtpserver"));
             smtpServerFactory.init();
+            sendMailHandler.init(null);
         }
     }
 
