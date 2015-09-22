@@ -24,63 +24,64 @@ import org.apache.james.jmap.exceptions.MalformedContinuationTokenException;
 
 import java.time.DateTimeException;
 
-@JsonDeserialize(builder=AccessTokenRequest.Builder.class)
+@JsonDeserialize(builder = AccessTokenRequest.Builder.class)
 public class AccessTokenRequest {
-	
-	public static final String UNIQUE_JSON_PATH = "/token";
-	
-	public static Builder builder() {
-		return new Builder();
-	}
-	
-	@JsonPOJOBuilder(withPrefix="")
-	public static class Builder {
-		
-		private ContinuationToken token;
-		private String method;
-		private String password;
 
-		private Builder() {}
-		
-		public Builder token(String token) throws MalformedContinuationTokenException {
-			this.token = ContinuationToken.fromString(token);
-			return this;
-		}
-		
-		public Builder method(String method) {
-			this.method = method;
-			return this;
-		}
-		
-		public Builder password(String password) {
-			this.password = password;
-			return this;
-		}
-		
-		public AccessTokenRequest build() {
-			return new AccessTokenRequest(token, method, password);
-		}
-	}
-	
-	private final ContinuationToken token;
-	private final String method;
-	private final String password;
-	
-	private AccessTokenRequest(ContinuationToken token, String method, String password) {
-		this.token = token;
-		this.method = method;
-		this.password = password;
-	}
+    public static final String UNIQUE_JSON_PATH = "/token";
 
-	public ContinuationToken getToken() {
-		return token;
-	}
-	
-	public String getMethod() {
-		return method;
-	}
-	
-	public String getPassword() {
-		return password;
-	}
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    @JsonPOJOBuilder(withPrefix = "")
+    public static class Builder {
+
+        private ContinuationToken token;
+        private String method;
+        private String password;
+
+        private Builder() {
+        }
+
+        public Builder token(String token) throws MalformedContinuationTokenException {
+            this.token = ContinuationToken.fromString(token);
+            return this;
+        }
+
+        public Builder method(String method) {
+            this.method = method;
+            return this;
+        }
+
+        public Builder password(String password) {
+            this.password = password;
+            return this;
+        }
+
+        public AccessTokenRequest build() {
+            return new AccessTokenRequest(token, method, password);
+        }
+    }
+
+    private final ContinuationToken token;
+    private final String method;
+    private final String password;
+
+    private AccessTokenRequest(ContinuationToken token, String method, String password) {
+        this.token = token;
+        this.method = method;
+        this.password = password;
+    }
+
+    public ContinuationToken getToken() {
+        return token;
+    }
+
+    public String getMethod() {
+        return method;
+    }
+
+    public String getPassword() {
+        return password;
+    }
 }

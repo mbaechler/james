@@ -21,75 +21,76 @@ package org.apache.james.jmap.model;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
-@JsonDeserialize(builder=ContinuationTokenRequest.Builder.class)
+@JsonDeserialize(builder = ContinuationTokenRequest.Builder.class)
 public class ContinuationTokenRequest {
 
-	public static final String UNIQUE_JSON_PATH = "/username";
-	
-	public static Builder builder() {
-		return new Builder();
-	}
-	
-	@JsonPOJOBuilder(withPrefix="")
-	public static class Builder {
-		
-		private String username;
-		private String clientName;
-		private String clientVersion;
-		private String deviceName;
+    public static final String UNIQUE_JSON_PATH = "/username";
 
-		private Builder() {}
-		
-		public Builder username(String username) {
-			this.username = username;
-			return this;
-		}
-		
-		public Builder clientName(String clientName) {
-			this.clientName = clientName;
-			return this;
-		}
-		
-		public Builder clientVersion(String clientVersion) {
-			this.clientVersion = clientVersion;
-			return this;
-		}
-		
-		public Builder deviceName(String deviceName) {
-			this.deviceName = deviceName;
-			return this;
-		}
-		
-		public ContinuationTokenRequest build() {
-			return new ContinuationTokenRequest(username, clientName, clientVersion, deviceName);
-		}
-	}
-	
-	private final String username;
-	private final String clientName;
-	private final String clientVersion;
-	private final String deviceName;
-	
-	private ContinuationTokenRequest(String username, String clientName, String clientVersion, String deviceName) {
-		this.username = username;
-		this.clientName = clientName;
-		this.clientVersion = clientVersion;
-		this.deviceName = deviceName;
-	}
+    public static Builder builder() {
+        return new Builder();
+    }
 
-	public String getUsername() {
-		return username;
-	}
-	
-	public String getClientName() {
-		return clientName;
-	}
-	
-	public String getClientVersion() {
-		return clientVersion;
-	}
-	
-	public String getDeviceName() {
-		return deviceName;
-	}
+    @JsonPOJOBuilder(withPrefix = "")
+    public static class Builder {
+
+        private String username;
+        private String clientName;
+        private String clientVersion;
+        private String deviceName;
+
+        private Builder() {
+        }
+
+        public Builder username(String username) {
+            this.username = username;
+            return this;
+        }
+
+        public Builder clientName(String clientName) {
+            this.clientName = clientName;
+            return this;
+        }
+
+        public Builder clientVersion(String clientVersion) {
+            this.clientVersion = clientVersion;
+            return this;
+        }
+
+        public Builder deviceName(String deviceName) {
+            this.deviceName = deviceName;
+            return this;
+        }
+
+        public ContinuationTokenRequest build() {
+            return new ContinuationTokenRequest(username, clientName, clientVersion, deviceName);
+        }
+    }
+
+    private final String username;
+    private final String clientName;
+    private final String clientVersion;
+    private final String deviceName;
+
+    private ContinuationTokenRequest(String username, String clientName, String clientVersion, String deviceName) {
+        this.username = username;
+        this.clientName = clientName;
+        this.clientVersion = clientVersion;
+        this.deviceName = deviceName;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getClientName() {
+        return clientName;
+    }
+
+    public String getClientVersion() {
+        return clientVersion;
+    }
+
+    public String getDeviceName() {
+        return deviceName;
+    }
 }

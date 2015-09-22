@@ -63,9 +63,9 @@ public class AuthenticationServlet extends HttpServlet {
             Object request = deserialize(req);
 
             if (request instanceof ContinuationTokenRequest) {
-                handleContinuationTokenRequest((ContinuationTokenRequest)request, resp);
+                handleContinuationTokenRequest((ContinuationTokenRequest) request, resp);
             } else if (request instanceof AccessTokenRequest) {
-                handleAccessTokenRequest((AccessTokenRequest)request, resp);
+                handleAccessTokenRequest((AccessTokenRequest) request, resp);
             }
         } catch (BadRequestException e) {
             LOG.warn("Invalid authentication request received.", e);
@@ -121,7 +121,7 @@ public class AuthenticationServlet extends HttpServlet {
             } else {
                 manageAuthenticationResponse(request, resp);
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             throw new InternalErrorException("Internal error while managing access token request", e);
         }
     }
@@ -151,9 +151,9 @@ public class AuthenticationServlet extends HttpServlet {
         resp.setStatus(HttpServletResponse.SC_CREATED);
         AccessTokenResponse response = AccessTokenResponse
             .builder()
-                // TODO Answer a real token
+            // TODO Answer a real token
             .accessToken("token")
-                // TODO Send API endpoints
+            // TODO Send API endpoints
             .build();
         mapper.writeValue(resp.getOutputStream(), response);
     }

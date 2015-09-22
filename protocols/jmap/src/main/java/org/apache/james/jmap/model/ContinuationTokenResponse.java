@@ -24,79 +24,80 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import com.google.common.collect.ImmutableList;
 
 public class ContinuationTokenResponse {
-	
-	public enum AuthenticationMethod {
-		PASSWORD("password"),
-		EXTERNAL("external"),
-		PROMPT("prompt");
-		
-		private String value;
 
-		AuthenticationMethod(String value) {
-			this.value = value;
-		}
-		
-		@JsonValue
-		public String toString() {
-			return value;
-		}
-	};
-	
-	public static Builder builder() {
-		return new Builder();
-	}
-	
-	public static class Builder {
-		private String continuationToken;
-		private ImmutableList<AuthenticationMethod> methods;
-		private String prompt;
+    public enum AuthenticationMethod {
+        PASSWORD("password"),
+        EXTERNAL("external"),
+        PROMPT("prompt");
 
-		private Builder() {}
-		
-		public Builder continuationToken(ContinuationToken continuationToken) {
-			this.continuationToken = continuationToken.serialize();
-			return this;
-		}
-		
-		public Builder methods(List<AuthenticationMethod> methods) {
-			this.methods = ImmutableList.copyOf(methods);
-			return this;
-		}
-		
-		public Builder methods(AuthenticationMethod... methods) {
-			this.methods = ImmutableList.copyOf(methods);
-			return this;
-		}
-		
-		public Builder prompt(String prompt) {
-			this.prompt = prompt;
-			return this;
-		}
-		
-		public ContinuationTokenResponse build() {
-			return new ContinuationTokenResponse(continuationToken, methods, prompt);
-		}
-	}
-	
-	private final String continuationToken;
-	private final ImmutableList<AuthenticationMethod> methods;
-	private final String prompt;
-	
-	private ContinuationTokenResponse(String continuationToken, ImmutableList<AuthenticationMethod> methods, String prompt) {
-		this.continuationToken = continuationToken;
-		this.methods = methods;
-		this.prompt = prompt;
-	}
+        private String value;
 
-	public String getContinuationToken() {
-		return continuationToken;
-	}
-	
-	public List<AuthenticationMethod> getMethods() {
-		return methods;
-	}
-	
-	public String getPrompt() {
-		return prompt;
-	}
+        AuthenticationMethod(String value) {
+            this.value = value;
+        }
+
+        @JsonValue
+        public String toString() {
+            return value;
+        }
+    };
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+        private String continuationToken;
+        private ImmutableList<AuthenticationMethod> methods;
+        private String prompt;
+
+        private Builder() {
+        }
+
+        public Builder continuationToken(ContinuationToken continuationToken) {
+            this.continuationToken = continuationToken.serialize();
+            return this;
+        }
+
+        public Builder methods(List<AuthenticationMethod> methods) {
+            this.methods = ImmutableList.copyOf(methods);
+            return this;
+        }
+
+        public Builder methods(AuthenticationMethod... methods) {
+            this.methods = ImmutableList.copyOf(methods);
+            return this;
+        }
+
+        public Builder prompt(String prompt) {
+            this.prompt = prompt;
+            return this;
+        }
+
+        public ContinuationTokenResponse build() {
+            return new ContinuationTokenResponse(continuationToken, methods, prompt);
+        }
+    }
+
+    private final String continuationToken;
+    private final ImmutableList<AuthenticationMethod> methods;
+    private final String prompt;
+
+    private ContinuationTokenResponse(String continuationToken, ImmutableList<AuthenticationMethod> methods, String prompt) {
+        this.continuationToken = continuationToken;
+        this.methods = methods;
+        this.prompt = prompt;
+    }
+
+    public String getContinuationToken() {
+        return continuationToken;
+    }
+
+    public List<AuthenticationMethod> getMethods() {
+        return methods;
+    }
+
+    public String getPrompt() {
+        return prompt;
+    }
 }

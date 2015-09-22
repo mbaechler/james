@@ -22,19 +22,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
 public class MultipleObjectMapperBuilder {
-	
-	private MultipleClassesDeserializer multipleClassesDeserializer = new MultipleClassesDeserializer();
 
-	public MultipleObjectMapperBuilder registerClass(String uniqueJsonPath, Class<?> clazz) {
-		multipleClassesDeserializer.registerClass(uniqueJsonPath, clazz);
-		return this;
-	}
-	
-	public ObjectMapper build() {
-		ObjectMapper mapper = new ObjectMapper();
-		SimpleModule module = new SimpleModule();
-		module.addDeserializer(Object.class, multipleClassesDeserializer);
-		mapper.registerModule(module);
-		return mapper;
-	}
+    private MultipleClassesDeserializer multipleClassesDeserializer = new MultipleClassesDeserializer();
+
+    public MultipleObjectMapperBuilder registerClass(String uniqueJsonPath, Class<?> clazz) {
+        multipleClassesDeserializer.registerClass(uniqueJsonPath, clazz);
+        return this;
+    }
+
+    public ObjectMapper build() {
+        ObjectMapper mapper = new ObjectMapper();
+        SimpleModule module = new SimpleModule();
+        module.addDeserializer(Object.class, multipleClassesDeserializer);
+        mapper.registerModule(module);
+        return mapper;
+    }
 }

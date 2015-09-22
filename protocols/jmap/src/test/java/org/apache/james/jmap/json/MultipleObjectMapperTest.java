@@ -27,62 +27,62 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class MultipleObjectMapperTest {
-	
-	private ObjectMapper mapper;
 
-	private static class First {
-		public String first;
-		public String other;
-	}
-	
-	private static class Second {
-		public String second;
-		public String other;
-	}
-	
-	@Before
-	public void setup() {
-		mapper = new MultipleObjectMapperBuilder()
-			.registerClass("/first", First.class)
-			.registerClass("/second", Second.class)
-			.build();
-	}
-	
-	@Test(expected=IllegalArgumentException.class)
-	public void registeringSameUniquePathShouldThrowAnException() throws Exception {
-		new MultipleObjectMapperBuilder()
-			.registerClass("/other", First.class)
-			.registerClass("/other", Second.class);
-	}
-	
-	@Test
-	public void registeringSameClassTwoTimesIsOK() throws Exception {
-		ObjectMapper uselessMapper = new MultipleObjectMapperBuilder()
-			.registerClass("/first", First.class)
-			.registerClass("/other", First.class)
-			.build();
-		String json = "{\"first\": \"value\", \"other\": \"other\"}";
-		Object o = uselessMapper.readValue(json, Object.class);
-		assertThat(o).isInstanceOf(First.class);
-	}
-	
-	@Test(expected=JsonMappingException.class)
-	public void badJsonShouldThrowException() throws Exception {
-		String json = "{\"bad\": \"value\"}";
-		mapper.readValue(json, Object.class);
-	}
-	
-	@Test
-	public void firstJsonShouldReturnFirstClass() throws Exception {
-		String json = "{\"first\": \"value\", \"other\": \"other\"}";
-		Object o = mapper.readValue(json, Object.class);
-		assertThat(o).isInstanceOf(First.class);
-	}
-	
-	@Test
-	public void secondJsonShouldReturnSecondClass() throws Exception {
-		String json = "{\"second\": \"value\", \"other\": \"other\"}";
-		Object o = mapper.readValue(json, Object.class);
-		assertThat(o).isInstanceOf(Second.class);
-	}
+    private ObjectMapper mapper;
+
+    private static class First {
+        public String first;
+        public String other;
+    }
+
+    private static class Second {
+        public String second;
+        public String other;
+    }
+
+    @Before
+    public void setup() {
+        mapper = new MultipleObjectMapperBuilder()
+                .registerClass("/first", First.class)
+                .registerClass("/second", Second.class)
+                .build();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void registeringSameUniquePathShouldThrowAnException() throws Exception {
+        new MultipleObjectMapperBuilder()
+            .registerClass("/other", First.class)
+            .registerClass("/other", Second.class);
+    }
+
+    @Test
+    public void registeringSameClassTwoTimesIsOK() throws Exception {
+        ObjectMapper uselessMapper = new MultipleObjectMapperBuilder()
+                .registerClass("/first", First.class)
+                .registerClass("/other", First.class)
+                .build();
+        String json = "{\"first\": \"value\", \"other\": \"other\"}";
+        Object o = uselessMapper.readValue(json, Object.class);
+        assertThat(o).isInstanceOf(First.class);
+    }
+
+    @Test(expected = JsonMappingException.class)
+    public void badJsonShouldThrowException() throws Exception {
+        String json = "{\"bad\": \"value\"}";
+        mapper.readValue(json, Object.class);
+    }
+
+    @Test
+    public void firstJsonShouldReturnFirstClass() throws Exception {
+        String json = "{\"first\": \"value\", \"other\": \"other\"}";
+        Object o = mapper.readValue(json, Object.class);
+        assertThat(o).isInstanceOf(First.class);
+    }
+
+    @Test
+    public void secondJsonShouldReturnSecondClass() throws Exception {
+        String json = "{\"second\": \"value\", \"other\": \"other\"}";
+        Object o = mapper.readValue(json, Object.class);
+        assertThat(o).isInstanceOf(Second.class);
+    }
 }

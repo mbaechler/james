@@ -19,82 +19,83 @@
 package org.apache.james.jmap.model;
 
 public class AccessTokenResponse {
-	
-	public static Builder builder() {
-		return new Builder();
-	}
-	
-	public static class Builder {
-		private String accessToken;
-		private String api;
-		private String eventSource;
-		private String upload;
-		private String download;
 
-		private Builder() {}
-		
-		public Builder accessToken(String accessToken) {
-			this.accessToken = accessToken;
-			return this;
-		}
-		
-		public Builder api(String api) {
-			this.api = api;
-			return this;
-		}
-		
-		public Builder eventSource(String eventSource) {
-			this.eventSource = eventSource;
-			return this;
-		}
-		
-		public Builder upload(String upload) {
-			this.upload = upload;
-			return this;
-		}
-		
-		public Builder download(String download) {
-			this.download = download;
-			return this;
-		}
-		
-		public AccessTokenResponse build() {
-			return new AccessTokenResponse(accessToken, api, eventSource, upload, download);
-		}
-	}
-	
-	private final String accessToken;
-	private final String api;
-	private final String eventSource;
-	private final String upload;
-	private final String download;
+    public static Builder builder() {
+        return new Builder();
+    }
 
-	private AccessTokenResponse(String accessToken, String api, String eventSource, String upload, String download) {
-		this.accessToken = accessToken;
-		this.api = api;
-		this.eventSource = eventSource;
-		this.upload = upload;
-		this.download = download;
-	}
+    public static class Builder {
+        private String accessToken;
+        private String api;
+        private String eventSource;
+        private String upload;
+        private String download;
 
-	public String getAccessToken() {
-		return accessToken;
-	}
+        private Builder() {
+        }
 
-	public String getApi() {
-		return api;
-	}
+        public Builder accessToken(String accessToken) {
+            this.accessToken = accessToken;
+            return this;
+        }
 
-	public String getEventSource() {
-		return eventSource;
-	}
+        public Builder api(String api) {
+            this.api = api;
+            return this;
+        }
 
-	public String getUpload() {
-		return upload;
-	}
+        public Builder eventSource(String eventSource) {
+            this.eventSource = eventSource;
+            return this;
+        }
 
-	public String getDownload() {
-		return download;
-	}
+        public Builder upload(String upload) {
+            this.upload = upload;
+            return this;
+        }
+
+        public Builder download(String download) {
+            this.download = download;
+            return this;
+        }
+
+        public AccessTokenResponse build() {
+            return new AccessTokenResponse(accessToken, api, eventSource, upload, download);
+        }
+    }
+
+    private final String accessToken;
+    private final String api;
+    private final String eventSource;
+    private final String upload;
+    private final String download;
+
+    private AccessTokenResponse(String accessToken, String api, String eventSource, String upload, String download) {
+        this.accessToken = accessToken;
+        this.api = api;
+        this.eventSource = eventSource;
+        this.upload = upload;
+        this.download = download;
+    }
+
+    public String getAccessToken() {
+        return accessToken;
+    }
+
+    public String getApi() {
+        return api;
+    }
+
+    public String getEventSource() {
+        return eventSource;
+    }
+
+    public String getUpload() {
+        return upload;
+    }
+
+    public String getDownload() {
+        return download;
+    }
 
 }

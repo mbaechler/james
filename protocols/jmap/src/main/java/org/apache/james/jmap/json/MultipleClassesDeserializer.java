@@ -33,35 +33,35 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
 
 public class MultipleClassesDeserializer extends StdDeserializer<Object> {
-	
-	private Map<String, Class<?>> registry =  new HashMap<String, Class<?>>();
-	
-	MultipleClassesDeserializer() {
-		super(Object.class);
-	}
 
-	@Override
-	public Object deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
-		ObjectMapper mapper = (ObjectMapper) p.getCodec();
-		final JsonNode root = mapper.readTree(p);
+    private Map<String, Class<?>> registry = new HashMap<String, Class<?>>();
 
-		return registry.entrySet().stream()
-			.filter(req -> ! (root.at(req.getKey()).isMissingNode()))
-			.map(x -> readValue(mapper, root, x.getValue()))
-			.findFirst()
-			.orElseThrow(() -> new JsonMappingException("Can't map request to a known registered class"));
-	}
+    MultipleClassesDeserializer() {
+        super(Object.class);
+    }
 
-	private Object readValue(ObjectMapper mapper, final JsonNode root, Class<?> clazz) {
-		try {
-			return mapper.treeToValue(root, clazz);
-		} catch (JsonProcessingException e) {
-			throw Throwables.propagate(e);
-		}
-	}
+    @Override
+    public Object deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+        ObjectMapper mapper = (ObjectMapper) p.getCodec();
+        final JsonNode root = mapper.readTree(p);
 
-	public void registerClass(String uniqueJsonPath, Class<?> clazz) {
-		Preconditions.checkArgument(! registry.containsKey(uniqueJsonPath), "Path %s has already been registered", uniqueJsonPath);
-		registry.put(uniqueJsonPath, clazz);
-	}
+        return registry.entrySet().stream()
+                .filter(req -> ! (root.at(req.getKey()).isMissingNode()))
+                .map(x -> readValue(mapper, root, x.getValue()))
+                .findFirst()
+                .orElseThrow(() -> new JsonMappingException("Can't map request to a known registered class"));
+    }
+
+    private Object readValue(ObjectMapper mapper, final JsonNode root, Class<?> clazz) {
+        try {
+            return mapper.treeToValue(root, clazz);
+        } catch (JsonProcessingException e) {
+            throw Throwables.propagate(e);
+        }
+    }
+
+    public void registerClass(String uniqueJsonPath, Class<?> clazz) {
+        Preconditions.checkArgument(! registry.containsKey(uniqueJsonPath), "Path %s has already been registered", uniqueJsonPath);
+        registry.put(uniqueJsonPath, clazz);
+    }
 }
