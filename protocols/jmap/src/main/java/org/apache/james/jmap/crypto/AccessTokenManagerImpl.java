@@ -17,40 +17,38 @@
  * under the License.                                           *
  ****************************************************************/
 
-package org.apache.james.jmap.api.access;
+package org.apache.james.jmap.crypto;
 
-import java.util.Objects;
-import java.util.UUID;
+import org.apache.james.jmap.api.AccessTokenManager;
+import org.apache.james.jmap.api.access.AccessToken;
+import org.apache.james.jmap.api.access.AccessTokenRepository;
+import org.apache.james.jmap.api.access.exceptions.InvalidAccessToken;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class AccessToken {
+import com.google.common.base.Preconditions;
 
-    public static AccessToken fromString(String tokenString) {
-        return new AccessToken(UUID.fromString(tokenString));
-    }
+public class AccessTokenManagerImpl implements AccessTokenManager {
 
-    private final UUID token;
+    private static final Logger LOGGER = LoggerFactory.getLogger(AccessTokenManagerImpl.class);
 
-    private AccessToken(UUID token) {
-        this.token = token;
-    }
-    
-    public AccessToken() {
-        this(UUID.randomUUID());
-    }
+    private final AccessTokenRepository accessTokenRepository;
 
-    public String serialize() {
-        return token.toString();
+    public AccessTokenManagerImpl(AccessTokenRepository accessTokenRepository) {
+        this.accessTokenRepository = accessTokenRepository;
     }
 
     @Override
-    public boolean equals(Object o) {
-        return o != null
-            && o instanceof AccessToken
-            && Objects.equals(this.token, ((AccessToken)o).token);
+    public AccessToken generateToken(String username) {
+        Preconditions.checkNotNull(username);
+        AccessToken accessToken = new AccessToken();
+        accessTokenRepository.addToken(username, accessToken);
+        return accessToken;
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(token);
+    public String getUsernameFromToken(AccessToken token) throws InvalidAccessToken {
+        return accessTokenRepository.getUsernameFromToken(token);
     }
+
 }

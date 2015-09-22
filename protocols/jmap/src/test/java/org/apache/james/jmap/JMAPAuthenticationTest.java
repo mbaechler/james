@@ -22,16 +22,20 @@ import static com.jayway.restassured.RestAssured.given;
 import static com.jayway.restassured.RestAssured.with;
 import static com.jayway.restassured.config.EncoderConfig.encoderConfig;
 import static com.jayway.restassured.config.RestAssuredConfig.newConfig;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.isA;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+
+import org.apache.james.jmap.api.AccessTokenManager;
 import org.apache.james.jmap.api.ContinuationTokenManager;
-import org.apache.james.jmap.model.ContinuationToken;
+import org.apache.james.jmap.crypto.AccessTokenManagerImpl;
+import org.apache.james.jmap.crypto.JamesSignatureHandlerProvider;
+import org.apache.james.jmap.crypto.SignedContinuationTokenManager;
+import org.apache.james.jmap.memory.access.MemoryAccessTokenRepository;
 import org.apache.james.jmap.utils.ZonedDateTimeProvider;
 import org.apache.james.user.api.UsersRepository;
 import org.apache.james.user.api.UsersRepositoryException;
@@ -46,20 +50,20 @@ import org.junit.Test;
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.http.ContentType;
 
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-
 public class JMAPAuthenticationTest {
 
     private static final int RANDOM_PORT = 0;
     private static final ZonedDateTime oldDate = ZonedDateTime.parse("2011-12-03T10:15:30+01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME);
     private static final ZonedDateTime newDate = ZonedDateTime.parse("2011-12-03T10:16:30+01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+    private static final ZonedDateTime afterExpirationDate = ZonedDateTime.parse("2011-12-03T10:30:31+01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+
 
     private Server server;
 
     private UsersRepository mockedUsersRepository;
-    private ContinuationTokenManager mockedContinuationTokenManager;
+    private ContinuationTokenManager continuationTokenManager;
     private ZonedDateTimeProvider mockedZonedDateTimeProvider;
+    private AccessTokenManager accessTokenManager;
 
     @Before
     public void setup() throws Exception {
@@ -69,12 +73,14 @@ public class JMAPAuthenticationTest {
         server.setHandler(handler);
 
         mockedUsersRepository = mock(UsersRepository.class);
-        mockedContinuationTokenManager = mock(ContinuationTokenManager.class);
         mockedZonedDateTimeProvider = mock(ZonedDateTimeProvider.class);
+        continuationTokenManager = new SignedContinuationTokenManager(new JamesSignatureHandlerProvider().provide(), mockedZonedDateTimeProvider);
+        accessTokenManager = new AccessTokenManagerImpl(new MemoryAccessTokenRepository(100));
 
         AuthenticationServlet authenticationServlet = new AuthenticationServlet();
         authenticationServlet.setUsersRepository(mockedUsersRepository);
-        authenticationServlet.setContinuationTokenManager(mockedContinuationTokenManager);
+        authenticationServlet.setContinuationTokenManager(continuationTokenManager);
+        authenticationServlet.setAccessTokenManager(accessTokenManager);
         ServletHolder servletHolder = new ServletHolder(authenticationServlet);
         handler.addServletWithMapping(servletHolder, "/*");
 
@@ -164,9 +170,8 @@ public class JMAPAuthenticationTest {
 
     @Test
     public void mustReturnJsonResponse() throws Exception {
-        when(mockedContinuationTokenManager.generateToken(eq("user@domain.tld")))
-            .thenAnswer(invocationOnMock -> new ContinuationToken("user@domain.tld", newDate, "signature"));
-        when(mockedContinuationTokenManager.isValid(any())).thenAnswer(invocationOnMock -> true);
+        when(mockedZonedDateTimeProvider.provide())
+            .thenReturn(oldDate);
 
         given()
             .contentType(ContentType.JSON)
@@ -181,9 +186,8 @@ public class JMAPAuthenticationTest {
 
     @Test
     public void methodShouldContainPasswordWhenValidResquest() throws Exception {
-        when(mockedZonedDateTimeProvider.provide()).thenAnswer(invocationOnMock -> oldDate);
-        when(mockedContinuationTokenManager.generateToken(eq("user@domain.tld")))
-            .thenAnswer(invocationOnMock -> new ContinuationToken("user@domain.tld", newDate, "signature"));
+        when(mockedZonedDateTimeProvider.provide())
+            .thenReturn(oldDate);
 
         given()
             .contentType(ContentType.JSON)
@@ -198,9 +202,8 @@ public class JMAPAuthenticationTest {
 
     @Test
     public void mustReturnContinuationTokenWhenValidResquest() throws Exception {
-        when(mockedZonedDateTimeProvider.provide()).thenAnswer(invocationOnMock -> oldDate);
-        when(mockedContinuationTokenManager.generateToken(eq("user@domain.tld")))
-            .thenAnswer(invocationOnMock -> new ContinuationToken("user@domain.tld", newDate, "signature"));
+        when(mockedZonedDateTimeProvider.provide())
+            .thenReturn(oldDate);
 
         given()
             .contentType(ContentType.JSON)
@@ -215,10 +218,8 @@ public class JMAPAuthenticationTest {
 
     @Test
     public void mustReturnAuthenticationFailedWhenBadPassword() throws Exception {
-        when(mockedZonedDateTimeProvider.provide()).thenAnswer(invocationOnMock -> oldDate);
-        when(mockedContinuationTokenManager.generateToken(eq("user@domain.tld")))
-            .thenAnswer(invocationOnMock -> new ContinuationToken("user@domain.tld", newDate, "signature"));
-        when(mockedContinuationTokenManager.isValid(any())).thenAnswer(invocationOnMock -> true);
+        when(mockedZonedDateTimeProvider.provide())
+            .thenReturn(oldDate);
 
         String continuationToken =
                 with()
@@ -242,10 +243,8 @@ public class JMAPAuthenticationTest {
 
     @Test
     public void mustReturnAuthenticationFailedWhenContinuationTokenIsRejectedByTheContinuationTokenManager() throws Exception {
-        when(mockedZonedDateTimeProvider.provide()).thenAnswer(invocationOnMock -> oldDate);
-        when(mockedContinuationTokenManager.generateToken(eq("user@domain.tld")))
-            .thenAnswer(invocationOnMock -> new ContinuationToken("user@domain.tld", newDate, "signature"));
-        when(mockedContinuationTokenManager.isValid(any())).thenAnswer(invocationOnMock -> false);
+        when(mockedZonedDateTimeProvider.provide())
+            .thenReturn(oldDate);
 
         String continuationToken =
                 with()
@@ -256,11 +255,16 @@ public class JMAPAuthenticationTest {
                     .body()
                     .path("continuationToken")
                     .toString();
+        
+        when(mockedUsersRepository.test("user@domain.tld", "password"))
+            .thenReturn(true);
+        when(mockedZonedDateTimeProvider.provide())
+            .thenReturn(afterExpirationDate);
 
         given()
             .contentType(ContentType.JSON)
             .accept(ContentType.JSON)
-            .body("{\"token\": \"" + continuationToken + "\", \"method\": \"password\", \"password\": \"badpassword\"}")
+            .body("{\"token\": \"" + continuationToken + "\", \"method\": \"password\", \"password\": \"password\"}")
         .when()
             .post("/authentication")
         .then()
@@ -269,10 +273,8 @@ public class JMAPAuthenticationTest {
 
     @Test
     public void mustReturnAuthenticationFailedWhenUsersRepositoryException() throws Exception {
-        when(mockedZonedDateTimeProvider.provide()).thenAnswer(invocationOnMock -> oldDate);
-        when(mockedContinuationTokenManager.generateToken(eq("user@domain.tld")))
-            .thenAnswer(invocationOnMock -> new ContinuationToken("user@domain.tld", newDate, "signature"));
-        when(mockedContinuationTokenManager.isValid(any())).thenAnswer(invocationOnMock -> true);
+        when(mockedZonedDateTimeProvider.provide())
+            .thenReturn(oldDate);
 
         String continuationToken =
                 with()
@@ -284,7 +286,7 @@ public class JMAPAuthenticationTest {
                     .path("continuationToken")
                     .toString();
 
-        when(mockedUsersRepository.test("username", "password"))
+        when(mockedUsersRepository.test("user@domain.tld", "password"))
             .thenThrow(new UsersRepositoryException("test"));
 
         given()
@@ -299,10 +301,8 @@ public class JMAPAuthenticationTest {
 
     @Test
     public void mustReturnCreatedWhenGoodPassword() throws Exception {
-        when(mockedZonedDateTimeProvider.provide()).thenAnswer(invocationOnMock -> oldDate);
-        when(mockedContinuationTokenManager.generateToken(eq("user@domain.tld")))
-            .thenAnswer(invocationOnMock -> new ContinuationToken("username", newDate, "signature"));
-        when(mockedContinuationTokenManager.isValid(any())).thenAnswer(invocationOnMock -> true);
+        when(mockedZonedDateTimeProvider.provide())
+            .thenReturn(oldDate);
 
         String continuationToken =
                 with()
@@ -314,8 +314,10 @@ public class JMAPAuthenticationTest {
                     .path("continuationToken")
                     .toString();
 
-        when(mockedUsersRepository.test("username", "password"))
+        when(mockedUsersRepository.test("user@domain.tld", "password"))
             .thenReturn(true);
+        when(mockedZonedDateTimeProvider.provide())
+            .thenReturn(newDate);
 
         given()
             .contentType(ContentType.JSON)
@@ -329,13 +331,10 @@ public class JMAPAuthenticationTest {
 
     @Test
     public void mustSendJsonContainingAccessTokenWhenGoodPassword() throws Exception {
-        when(mockedZonedDateTimeProvider.provide()).thenAnswer(invocationOnMock -> oldDate);
-        ContinuationToken sentContinuationToken = new ContinuationToken("user@domain.tld", newDate, "signature");
-        when(mockedContinuationTokenManager.generateToken(eq("user@domain.tld")))
-            .thenAnswer(invocationOnMock -> sentContinuationToken);
-        when(mockedContinuationTokenManager.isValid(any())).thenAnswer(invocationOnMock -> true);
+        when(mockedZonedDateTimeProvider.provide())
+            .thenReturn(oldDate);
 
-        ContinuationToken receivedContinuationToken = ContinuationToken.fromString(
+        String continuationToken =
                 with()
                     .contentType(ContentType.JSON)
                     .accept(ContentType.JSON)
@@ -343,9 +342,21 @@ public class JMAPAuthenticationTest {
                 .post("/authentication")
                     .body()
                     .path("continuationToken")
-                    .toString());
+                    .toString();
 
-        assertThat(receivedContinuationToken).isEqualTo(sentContinuationToken);
+        when(mockedUsersRepository.test("user@domain.tld", "password"))
+            .thenReturn(true);
+        when(mockedZonedDateTimeProvider.provide())
+            .thenReturn(newDate);
+
+        given()
+            .contentType(ContentType.JSON)
+            .accept(ContentType.JSON)
+            .body("{\"token\": \"" + continuationToken + "\", \"method\": \"password\", \"password\": \"password\"}")
+        .when()
+            .post("/authentication")
+        .then()
+            .body("accessToken", isA(String.class));
     }
 
     @After

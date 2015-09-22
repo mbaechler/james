@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.james.jmap.api.AccessTokenManager;
 import org.apache.james.jmap.api.ContinuationTokenManager;
 import org.apache.james.jmap.exceptions.BadRequestException;
 import org.apache.james.jmap.exceptions.InternalErrorException;
@@ -53,6 +54,7 @@ public class AuthenticationServlet extends HttpServlet {
 
     private UsersRepository usersRepository;
     private ContinuationTokenManager continuationTokenManager;
+    private AccessTokenManager accessTokenManager;
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -109,7 +111,7 @@ public class AuthenticationServlet extends HttpServlet {
                 .build();
             mapper.writeValue(resp.getOutputStream(), continuationTokenResponse);
         } catch (Exception e) {
-            throw new InternalErrorException("Error while responding to continuation token");
+            throw new InternalErrorException("Error while responding to continuation token", e);
         }
     }
 
@@ -129,7 +131,7 @@ public class AuthenticationServlet extends HttpServlet {
     private void manageAuthenticationResponse(AccessTokenRequest request, HttpServletResponse resp) throws IOException {
         String username = request.getToken().getUsername();
         if (authenticate(request, username)) {
-            returnAccessTokenResponse(resp);
+            returnAccessTokenResponse(resp, username);
         } else {
             LOG.info("Authentication failure for " + username);
             returnUnauthorizedResponse(resp);
@@ -146,13 +148,12 @@ public class AuthenticationServlet extends HttpServlet {
         return authenticated;
     }
 
-    private void returnAccessTokenResponse(HttpServletResponse resp) throws IOException {
+    private void returnAccessTokenResponse(HttpServletResponse resp, String username) throws IOException {
         resp.setContentType(JSON_CONTENT_TYPE_UTF8);
         resp.setStatus(HttpServletResponse.SC_CREATED);
         AccessTokenResponse response = AccessTokenResponse
             .builder()
-            // TODO Answer a real token
-            .accessToken("token")
+            .accessToken(accessTokenManager.generateToken(username))
             // TODO Send API endpoints
             .build();
         mapper.writeValue(resp.getOutputStream(), response);
@@ -168,6 +169,10 @@ public class AuthenticationServlet extends HttpServlet {
 
     public void setContinuationTokenManager(ContinuationTokenManager continuationTokenManager) {
         this.continuationTokenManager = continuationTokenManager;
+    }
+
+    public void setAccessTokenManager(AccessTokenManager accessTokenManager) {
+        this.accessTokenManager = accessTokenManager;
     }
 
 }
