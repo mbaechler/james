@@ -29,6 +29,7 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -202,9 +203,12 @@ public abstract class AbstractFileSystemTest {
     @Parameters(source = AvailableStreamsProvider.class)
     public final void availableInputStreamShouldReturnANonEmptyStream(String url) throws Exception {
         url = replacePort(url);
-        
         InputStream inputStream = fileSystem.getResource(url);
-        assertThat(inputStream.available()).isGreaterThan(0);
+        try {
+            assertThat(IOUtils.toString(inputStream).length()).isGreaterThan(0);
+        } finally {
+            IOUtils.closeQuietly(inputStream);
+        }
     }
 
     private String replacePort(String url) {
@@ -248,10 +252,12 @@ public abstract class AbstractFileSystemTest {
     @Parameters(source = FileToCreateProvider.class)
     public final void createdFilesAsInputStreamShouldBeAvailable(String name, String extension) throws Exception {
         File temp = createTempFile(name, extension);
+        InputStream inputStream = null;
         try {
-            InputStream inputStream = fileSystem.getResource("file:" + temp.getAbsolutePath());
-            assertThat(inputStream.available()).isGreaterThan(0);
+            inputStream = fileSystem.getResource("file:" + temp.getAbsolutePath());
+            assertThat(IOUtils.toString(inputStream)).isEqualTo("content");
         } finally {
+            IOUtils.closeQuietly(inputStream);
             temp.delete();
         }
     }
@@ -260,11 +266,14 @@ public abstract class AbstractFileSystemTest {
     @Parameters(source = FileToCreateProvider.class)
     public final void createdFilesAsInputStreamShouldBeAvailableWhenAccessedWithTwoSlashes(String name, String extension) throws Exception {
         File temp = createTempFile(name, extension);
-
-        InputStream inputStream = fileSystem.getResource("file://" + temp.getAbsolutePath());
-        assertThat(inputStream.available()).isGreaterThan(0);
-
-        temp.delete();
+        InputStream inputStream = null;
+        try {
+            inputStream = fileSystem.getResource("file://" + temp.getAbsolutePath());
+            assertThat(IOUtils.toString(inputStream)).isEqualTo("content");
+        } finally {
+            IOUtils.closeQuietly(inputStream);
+            temp.delete();
+        }
     }
 
     private File createTempFile(String name, String extension) throws IOException {
