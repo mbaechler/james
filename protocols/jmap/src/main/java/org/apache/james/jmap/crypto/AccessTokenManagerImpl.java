@@ -35,9 +35,9 @@ public class AccessTokenManagerImpl implements AccessTokenManager {
     }
 
     @Override
-    public AccessToken generateToken(String username) {
+    public AccessToken grantAccessToken(String username) {
         Preconditions.checkNotNull(username);
-        AccessToken accessToken = AccessToken.random();
+        AccessToken accessToken = AccessToken.generate();
         accessTokenRepository.addToken(username, accessToken);
         return accessToken;
     }

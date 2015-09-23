@@ -40,35 +40,35 @@ public class AccessTokenManagerImplTest {
     }
     
     @Test(expected=NullPointerException.class)
-    public void generateShouldThrowOnNullUsername() throws Exception {
-        accessTokenManager.generateToken(null);
+    public void grantShouldThrowOnNullUsername() throws Exception {
+        accessTokenManager.grantAccessToken(null);
     }
     
     @Test
-    public void generateShouldGenerateATokenOnUsername() throws Exception {
-        assertThat(accessTokenManager.generateToken("username")).isNotNull();
+    public void grantShouldGenerateATokenOnUsername() throws Exception {
+        assertThat(accessTokenManager.grantAccessToken("username")).isNotNull();
     }
 
     @Test
-    public void generateShouldStoreATokenOnUsername() throws Exception {
-        AccessToken token = accessTokenManager.generateToken("username");
+    public void grantShouldStoreATokenOnUsername() throws Exception {
+        AccessToken token = accessTokenManager.grantAccessToken("username");
         assertThat(accessTokenRepository.getUsernameFromToken(token)).isEqualTo("username");
     }
     
     @Test(expected=InvalidAccessToken.class)
     public void getUsernameShouldThrowWhenUnknownToken() throws Exception {
-        accessTokenManager.getUsernameFromToken(AccessToken.random());
+        accessTokenManager.getUsernameFromToken(AccessToken.generate());
     }
 
     @Test(expected=InvalidAccessToken.class)
     public void getUsernameShouldThrowWhenOtherToken() throws Exception {
-        accessTokenManager.generateToken("username");
-        accessTokenManager.getUsernameFromToken(AccessToken.random());
+        accessTokenManager.grantAccessToken("username");
+        accessTokenManager.getUsernameFromToken(AccessToken.generate());
     }
 
     @Test
     public void getUsernameShouldReturnUsernameWhenExistingUsername() throws Exception {
-        AccessToken token = accessTokenManager.generateToken("username");
+        AccessToken token = accessTokenManager.grantAccessToken("username");
         assertThat(accessTokenManager.getUsernameFromToken(token)).isEqualTo("username");
     }
 

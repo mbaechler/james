@@ -153,7 +153,7 @@ public class AuthenticationServlet extends HttpServlet {
         resp.setStatus(HttpServletResponse.SC_CREATED);
         AccessTokenResponse response = AccessTokenResponse
             .builder()
-            .accessToken(accessTokenManager.generateToken(username))
+            .accessToken(accessTokenManager.grantAccessToken(username))
             // TODO Send API endpoints
             .build();
         mapper.writeValue(resp.getOutputStream(), response);

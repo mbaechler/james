@@ -24,7 +24,7 @@ import org.apache.james.jmap.api.access.exceptions.InvalidAccessToken;
 
 public interface AccessTokenManager {
 
-    AccessToken generateToken(String username);
+    AccessToken grantAccessToken(String username);
 
     String getUsernameFromToken(AccessToken token) throws InvalidAccessToken;
 
