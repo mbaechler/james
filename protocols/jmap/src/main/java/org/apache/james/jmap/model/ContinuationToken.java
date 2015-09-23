@@ -73,13 +73,12 @@ public class ContinuationToken {
         Preconditions.checkArgument(!Strings.isNullOrEmpty(serializedToken), "Serialized continuation token should not be null or empty");
         LinkedList<String> tokenParts = Lists.newLinkedList(Splitter.on(SEPARATOR).split(serializedToken));
         try {
-            Builder builder = ContinuationToken.builder()
+            return ContinuationToken.builder()
                     .signature(tokenParts.removeLast())
-                    .expirationDate(ZonedDateTime.parse(tokenParts.removeLast(), DateTimeFormatter.ISO_OFFSET_DATE_TIME));
-            tokenParts.getLast();
-            builder.username(Joiner.on(SEPARATOR).join(tokenParts));
-            return builder.build();
-        } catch (NoSuchElementException e) {
+                    .expirationDate(ZonedDateTime.parse(tokenParts.removeLast(), DateTimeFormatter.ISO_OFFSET_DATE_TIME))
+                    .username(Joiner.on(SEPARATOR).join(tokenParts))
+                    .build();
+        } catch (NoSuchElementException | IllegalArgumentException e) {
             throw new MalformedContinuationTokenException("Token " + serializedToken + " does not have enough parts", e);
         } catch(DateTimeException e) {
             throw new MalformedContinuationTokenException("Token " + serializedToken + " as an incorrect date", e);
@@ -92,6 +91,7 @@ public class ContinuationToken {
 
     public ContinuationToken(String username, ZonedDateTime expirationDate, String signature) {
         Preconditions.checkNotNull(username);
+        Preconditions.checkArgument(! username.isEmpty());
         Preconditions.checkNotNull(expirationDate);
         Preconditions.checkNotNull(signature);
         this.username = username;
