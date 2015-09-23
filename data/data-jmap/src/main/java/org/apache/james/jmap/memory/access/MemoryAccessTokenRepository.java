@@ -45,6 +45,7 @@ public class MemoryAccessTokenRepository implements AccessTokenRepository {
     @Override
     public void addToken(String username, AccessToken accessToken) throws AccessTokenAlreadyStored{
         Preconditions.checkNotNull(username);
+        Preconditions.checkArgument(! username.isEmpty(), "Username should not be empty");
         Preconditions.checkNotNull(accessToken);
         synchronized (tokensExpirationDates) {
             if (tokensExpirationDates.putIfAbsent(accessToken, username) != null) {

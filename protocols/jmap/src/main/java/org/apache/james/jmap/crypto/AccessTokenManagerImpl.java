@@ -23,14 +23,10 @@ import org.apache.james.jmap.api.AccessTokenManager;
 import org.apache.james.jmap.api.access.AccessToken;
 import org.apache.james.jmap.api.access.AccessTokenRepository;
 import org.apache.james.jmap.api.access.exceptions.InvalidAccessToken;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
 
 public class AccessTokenManagerImpl implements AccessTokenManager {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(AccessTokenManagerImpl.class);
 
     private final AccessTokenRepository accessTokenRepository;
 
@@ -41,7 +37,7 @@ public class AccessTokenManagerImpl implements AccessTokenManager {
     @Override
     public AccessToken generateToken(String username) {
         Preconditions.checkNotNull(username);
-        AccessToken accessToken = new AccessToken();
+        AccessToken accessToken = AccessToken.random();
         accessTokenRepository.addToken(username, accessToken);
         return accessToken;
     }

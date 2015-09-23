@@ -30,7 +30,7 @@ import org.junit.Test;
 
 public class MemoryAccessTokenRepositoryTest {
 
-    private static final AccessToken TOKEN = new AccessToken();
+    private static final AccessToken TOKEN = AccessToken.random();
     private static final String USERNAME = "username";
     private static final int TTL_IN_MS = 100;
 
@@ -79,6 +79,11 @@ public class MemoryAccessTokenRepositoryTest {
     @Test(expected = NullPointerException.class)
     public void addTokenMustThrowWhenUsernameIsNull() throws Exception {
         accessTokenRepository.addToken(null, TOKEN);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void addTokenMustThrowWhenUsernameIsEmpty() throws Exception {
+        accessTokenRepository.addToken("", TOKEN);
     }
 
     @Test(expected = NullPointerException.class)

@@ -34,8 +34,8 @@ public class AccessToken {
         this.token = token;
     }
     
-    public AccessToken() {
-        this(UUID.randomUUID());
+    public static AccessToken random() {
+        return new AccessToken(UUID.randomUUID());
     }
 
     public String serialize() {

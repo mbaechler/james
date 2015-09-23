@@ -57,13 +57,13 @@ public class AccessTokenManagerImplTest {
     
     @Test(expected=InvalidAccessToken.class)
     public void getUsernameShouldThrowWhenUnknownToken() throws Exception {
-        accessTokenManager.getUsernameFromToken(new AccessToken());
+        accessTokenManager.getUsernameFromToken(AccessToken.random());
     }
 
     @Test(expected=InvalidAccessToken.class)
     public void getUsernameShouldThrowWhenOtherToken() throws Exception {
         accessTokenManager.generateToken("username");
-        accessTokenManager.getUsernameFromToken(new AccessToken());
+        accessTokenManager.getUsernameFromToken(AccessToken.random());
     }
 
     @Test
