@@ -21,7 +21,6 @@ package org.apache.james.smtpserver;
 
 import java.util.Collection;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.mail.MessagingException;
 
