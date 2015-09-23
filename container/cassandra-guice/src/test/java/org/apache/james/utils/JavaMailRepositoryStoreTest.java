@@ -22,6 +22,8 @@ package org.apache.james.utils;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
+import java.io.File;
+
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.james.core.JamesServerResourceLoader;
 import org.apache.james.core.filesystem.FileSystemImpl;
@@ -41,11 +43,12 @@ public class JavaMailRepositoryStoreTest {
 
     @Before
     public void setUp() throws Exception {
-        fileSystem = new FileSystemImpl(new JamesServerResourceLoader("../"));
+        File resourcesFolder = new File("src/test/resources");
+        fileSystem = new FileSystemImpl(new JamesServerResourceLoader(resourcesFolder.getAbsolutePath()));
         repositoryStore = new JavaMailRepositoryStore(Sets.newHashSet(
                 new MailStoreRepositoryModule.FileMailRepositoryProvider(
                         fileSystem)));
-        repositoryStore.configure(new FileConfigurationProvider(fileSystem, FileSystem.CLASSPATH_PROTOCOL).getConfiguration("mailrepositorystore"));
+        repositoryStore.configure(new FileConfigurationProvider(fileSystem, FileSystem.FILE_PROTOCOL).getConfiguration("conf/mailrepositorystore"));
         repositoryStore.init();
     }
 
@@ -72,10 +75,12 @@ public class JavaMailRepositoryStoreTest {
     @Test(expected = ConfigurationException.class)
     public void configureShouldThrowWhenNonValidClassesAreProvided() throws Exception {
         try {
+            File resourcesFolder = new File("src/test/resources");
+            fileSystem = new FileSystemImpl(new JamesServerResourceLoader(resourcesFolder.getAbsolutePath()));
             repositoryStore = new JavaMailRepositoryStore(Sets.newHashSet(
                     new MailStoreRepositoryModule.FileMailRepositoryProvider(
                             fileSystem)));
-            repositoryStore.configure(new FileConfigurationProvider(fileSystem, FileSystem.CLASSPATH_PROTOCOL).getConfiguration("fakemailrepositorystore"));
+            repositoryStore.configure(new FileConfigurationProvider(fileSystem, FileSystem.FILE_PROTOCOL).getConfiguration("conf/fakemailrepositorystore"));
         } catch (ConfigurationException e) {
             fail("Unexpected failure : ", e);
         }

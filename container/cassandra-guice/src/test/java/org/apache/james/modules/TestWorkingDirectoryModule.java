@@ -19,41 +19,16 @@
 
 package org.apache.james.modules;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-
-import org.apache.james.core.JamesServerResourceLoader;
-import org.apache.james.core.filesystem.FileSystemImpl;
-import org.apache.james.filesystem.api.FileSystem;
-import org.apache.james.filesystem.api.JamesDirectoriesProvider;
-import org.apache.james.utils.ConfigurationProvider;
-import org.apache.james.utils.FileConfigurationProvider;
+import org.apache.james.utils.TestWorkingDirectoryProviderImpl;
 import org.apache.james.utils.WorkingDirectoryProvider;
-import org.apache.james.utils.WorkingDirectoryProviderImpl;
 
 import com.google.inject.AbstractModule;
-import com.google.inject.Provides;
 
-public class CommonServicesModule extends AbstractModule {
-    
-    public static final String CONFIGURATION_PATH = "configurationPath";
-    
+public class TestWorkingDirectoryModule extends AbstractModule {
+
     @Override
     protected void configure() {
-        bind(FileSystem.class).to(FileSystemImpl.class);
-        bind(ConfigurationProvider.class).to(FileConfigurationProvider.class);
-        bind(WorkingDirectoryProvider.class).to(WorkingDirectoryProviderImpl.class);
+        bind(WorkingDirectoryProvider.class).to(TestWorkingDirectoryProviderImpl.class);
     }
 
-    @Provides @Singleton @Named(CONFIGURATION_PATH)
-    public String configurationPath() {
-        return FileSystem.FILE_PROTOCOL_AND_CONF;
-    }
-    
-    @Provides @Singleton @Inject
-    public JamesDirectoriesProvider directories(WorkingDirectoryProvider workingDirectoryProvider) {
-        return new JamesServerResourceLoader(workingDirectoryProvider.get());
-    }
-    
 }
