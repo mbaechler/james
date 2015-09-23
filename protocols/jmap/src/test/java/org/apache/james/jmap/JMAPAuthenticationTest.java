@@ -29,9 +29,13 @@ import static org.mockito.Mockito.when;
 
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.UUID;
+
+import javax.servlet.Filter;
 
 import org.apache.james.jmap.api.AccessTokenManager;
 import org.apache.james.jmap.api.ContinuationTokenManager;
+import org.apache.james.jmap.api.access.AccessToken;
 import org.apache.james.jmap.crypto.AccessTokenManagerImpl;
 import org.apache.james.jmap.crypto.JamesSignatureHandlerProvider;
 import org.apache.james.jmap.crypto.SignedContinuationTokenManager;
@@ -41,6 +45,7 @@ import org.apache.james.user.api.UsersRepository;
 import org.apache.james.user.api.UsersRepositoryException;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.junit.After;
@@ -84,6 +89,11 @@ public class JMAPAuthenticationTest {
         ServletHolder servletHolder = new ServletHolder(authenticationServlet);
         handler.addServletWithMapping(servletHolder, "/*");
 
+        AuthenticationFilter authenticationFilter = new AuthenticationFilter(accessTokenManager);
+        Filter getAuthenticationFilter = new BypassOnPostFilter(authenticationFilter);
+        FilterHolder authenticationFilterHolder = new FilterHolder(getAuthenticationFilter);
+        handler.addFilterWithMapping(authenticationFilterHolder, "/*", null);
+        
         server.start();
 
         int localPort = ((ServerConnector) server.getConnectors()[0]).getLocalPort();
@@ -221,15 +231,7 @@ public class JMAPAuthenticationTest {
         when(mockedZonedDateTimeProvider.provide())
             .thenReturn(oldDate);
 
-        String continuationToken =
-                with()
-                    .contentType(ContentType.JSON)
-                    .accept(ContentType.JSON)
-                    .body("{\"username\": \"user@domain.tld\", \"clientName\": \"Mozilla Thunderbird\", \"clientVersion\": \"42.0\", \"deviceName\": \"Joe Blogg’s iPhone\"}")
-                .post("/authentication")
-                    .body()
-                    .path("continuationToken")
-                    .toString();
+        String continuationToken = fromGoodContinuationTokenRequest();
 
         given()
             .contentType(ContentType.JSON)
@@ -246,15 +248,7 @@ public class JMAPAuthenticationTest {
         when(mockedZonedDateTimeProvider.provide())
             .thenReturn(oldDate);
 
-        String continuationToken =
-                with()
-                    .contentType(ContentType.JSON)
-                    .accept(ContentType.JSON)
-                    .body("{\"username\": \"user@domain.tld\", \"clientName\": \"Mozilla Thunderbird\", \"clientVersion\": \"42.0\", \"deviceName\": \"Joe Blogg’s iPhone\"}")
-                .post("/authentication")
-                    .body()
-                    .path("continuationToken")
-                    .toString();
+        String continuationToken = fromGoodContinuationTokenRequest();
         
         when(mockedUsersRepository.test("user@domain.tld", "password"))
             .thenReturn(true);
@@ -276,15 +270,7 @@ public class JMAPAuthenticationTest {
         when(mockedZonedDateTimeProvider.provide())
             .thenReturn(oldDate);
 
-        String continuationToken =
-                with()
-                    .contentType(ContentType.JSON)
-                    .accept(ContentType.JSON)
-                    .body("{\"username\": \"user@domain.tld\", \"clientName\": \"Mozilla Thunderbird\", \"clientVersion\": \"42.0\", \"deviceName\": \"Joe Blogg’s iPhone\"}")
-                .post("/authentication")
-                    .body()
-                    .path("continuationToken")
-                    .toString();
+        String continuationToken = fromGoodContinuationTokenRequest();
 
         when(mockedUsersRepository.test("user@domain.tld", "password"))
             .thenThrow(new UsersRepositoryException("test"));
@@ -304,15 +290,7 @@ public class JMAPAuthenticationTest {
         when(mockedZonedDateTimeProvider.provide())
             .thenReturn(oldDate);
 
-        String continuationToken =
-                with()
-                    .contentType(ContentType.JSON)
-                    .accept(ContentType.JSON)
-                    .body("{\"username\": \"user@domain.tld\", \"clientName\": \"Mozilla Thunderbird\", \"clientVersion\": \"42.0\", \"deviceName\": \"Joe Blogg’s iPhone\"}")
-                .post("/authentication")
-                    .body()
-                    .path("continuationToken")
-                    .toString();
+        String continuationToken = fromGoodContinuationTokenRequest();
 
         when(mockedUsersRepository.test("user@domain.tld", "password"))
             .thenReturn(true);
@@ -334,15 +312,7 @@ public class JMAPAuthenticationTest {
         when(mockedZonedDateTimeProvider.provide())
             .thenReturn(oldDate);
 
-        String continuationToken =
-                with()
-                    .contentType(ContentType.JSON)
-                    .accept(ContentType.JSON)
-                    .body("{\"username\": \"user@domain.tld\", \"clientName\": \"Mozilla Thunderbird\", \"clientVersion\": \"42.0\", \"deviceName\": \"Joe Blogg’s iPhone\"}")
-                .post("/authentication")
-                    .body()
-                    .path("continuationToken")
-                    .toString();
+        String continuationToken = fromGoodContinuationTokenRequest();
 
         when(mockedUsersRepository.test("user@domain.tld", "password"))
             .thenReturn(true);
@@ -357,6 +327,77 @@ public class JMAPAuthenticationTest {
             .post("/authentication")
         .then()
             .body("accessToken", isA(String.class));
+    }
+    
+    @Test
+    public void getMustReturnUnauthorizedWithoutAuthroizationHeader() throws Exception {
+        given()
+        .when()
+            .get("/authentication")
+        .then()
+            .statusCode(401);
+    }
+
+    @Test
+    public void getMustReturnUnauthorizedWithoutAValidAuthroizationHeader() throws Exception {
+        given()
+            .header("Authorization", UUID.randomUUID())
+        .when()
+            .get("/authentication")
+        .then()
+            .statusCode(401);
+    }
+
+    @Test
+    public void getMustReturnEndpointsWhenValidAuthorizationHeader() throws Exception {
+        AccessToken token = accessTokenManager.grantAccessToken("username");
+        given()
+            .header("Authorization", token.serialize())
+        .when()
+            .get("/authentication")
+        .then()
+            .statusCode(200)
+            .body("api", isA(String.class));
+    }
+
+    @Test
+    public void getMustReturnEndpointsWhenCorrectAuthentication() throws Exception {
+        when(mockedZonedDateTimeProvider.provide())
+            .thenReturn(oldDate);
+
+        String continuationToken = fromGoodContinuationTokenRequest();
+    
+        when(mockedUsersRepository.test("user@domain.tld", "password"))
+            .thenReturn(true);
+        when(mockedZonedDateTimeProvider.provide())
+            .thenReturn(newDate);
+    
+        String accessToken = with()
+            .contentType(ContentType.JSON)
+            .accept(ContentType.JSON)
+            .body("{\"token\": \"" + continuationToken + "\", \"method\": \"password\", \"password\": \"password\"}")
+        .post("/authentication")
+            .path("accessToken")
+            .toString();
+    
+        given()
+            .header("Authorization", accessToken)
+        .when()
+            .get("/authentication")
+        .then()
+            .statusCode(200)
+            .body("api", isA(String.class));
+    }
+
+    private String fromGoodContinuationTokenRequest() {
+        return with()
+            .contentType(ContentType.JSON)
+            .accept(ContentType.JSON)
+            .body("{\"username\": \"user@domain.tld\", \"clientName\": \"Mozilla Thunderbird\", \"clientVersion\": \"42.0\", \"deviceName\": \"Joe Blogg’s iPhone\"}")
+        .post("/authentication")
+            .body()
+            .path("continuationToken")
+            .toString();
     }
 
     @After
