@@ -44,5 +44,4 @@ public class CassandraJamesServer {
     public void stop() {
         preDestroyModule.getStager().stage();
     }
-
 }
