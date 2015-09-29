@@ -19,6 +19,7 @@
 package org.apache.james.jmap;
 
 import java.io.IOException;
+import java.util.function.BiFunction;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -113,7 +114,7 @@ public class AuthenticationServlet extends HttpServlet {
             ContinuationTokenResponse continuationTokenResponse = ContinuationTokenResponse
                 .builder()
                 .continuationToken(continuationTokenManager.generateToken(request.getUsername()))
-                .methods(ContinuationTokenResponse.AuthenticationMethod.PASSWORD)
+                .methods(ContinuationTokenResponse.AuthenticationMethod.PASSWORD, ContinuationTokenResponse.AuthenticationMethod.EXTERNAL)
                 .build();
             mapper.writeValue(resp.getOutputStream(), continuationTokenResponse);
         } catch (Exception e) {
@@ -136,7 +137,7 @@ public class AuthenticationServlet extends HttpServlet {
 
     private void manageAuthenticationResponse(AccessTokenRequest request, HttpServletResponse resp) throws IOException {
         String username = request.getToken().getUsername();
-        if (authenticate(request, username)) {
+        if (chooseAuthenticationMethodHandler(request.getMethod()).apply(request, username)) {
             returnAccessTokenResponse(resp, username);
         } else {
             LOG.info("Authentication failure for " + username);
@@ -144,7 +145,22 @@ public class AuthenticationServlet extends HttpServlet {
         }
     }
 
-    private boolean authenticate(AccessTokenRequest request, String username) {
+    private BiFunction<AccessTokenRequest, String, Boolean> chooseAuthenticationMethodHandler(String method) {
+        switch (method) {
+        case "external":
+            return this::externalAuthentication;
+        case "password":
+            return this::passwordAuthentication;
+        default:
+            throw new IllegalArgumentException();
+        }
+    }
+    
+    private boolean externalAuthentication(AccessTokenRequest request, String username) {
+        return true;
+    }
+    
+    private boolean passwordAuthentication(AccessTokenRequest request, String username) {
         boolean authenticated = false;
         try {
             authenticated = usersRepository.test(username, request.getPassword());
@@ -160,7 +176,10 @@ public class AuthenticationServlet extends HttpServlet {
         AccessTokenResponse response = AccessTokenResponse
             .builder()
             .accessToken(accessTokenManager.grantAccessToken(username))
-            // TODO Send API endpoints
+            .api("/")
+            .eventSource("/es")
+            .upload("/upload")
+            .download("/download")
             .build();
         mapper.writeValue(resp.getOutputStream(), response);
     }

@@ -19,15 +19,14 @@
 
 package org.apache.james.jmap.crypto;
 
-import com.google.common.collect.Lists;
-import org.apache.commons.configuration.HierarchicalConfiguration;
-import org.apache.james.filesystem.api.FileSystem;
-import org.apache.james.protocols.lib.KeystoreLoader;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+
+import org.apache.commons.configuration.HierarchicalConfiguration;
+import org.apache.james.filesystem.api.FileSystem;
+import org.apache.james.protocols.lib.KeystoreLoader;
 
 public class JamesSignatureHandlerProvider {
 
@@ -58,10 +57,7 @@ public class JamesSignatureHandlerProvider {
 
     private HierarchicalConfiguration createTestCConfiguration() {
         HierarchicalConfiguration configuration = new HierarchicalConfiguration();
-        HierarchicalConfiguration.Node secretNode = new HierarchicalConfiguration.Node();
-        secretNode.setName("secret");
-        secretNode.setValue("james72laBalle");
-        configuration.addNodes("tls", Lists.newArrayList(secretNode));
+        configuration.setProperty("secret", "james72laBalle");
         return configuration;
     }
 

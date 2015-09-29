@@ -19,19 +19,19 @@
 
 package org.apache.james.jmap.crypto;
 
-import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
+import java.security.Key;
+import java.security.KeyStore;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.Signature;
+
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.james.lifecycle.api.Configurable;
 import org.apache.james.protocols.lib.KeystoreLoader;
 
-import java.security.Key;
-import java.security.KeyStore;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.security.Signature;
+import com.google.common.base.Preconditions;
 
 public class JamesSignatureHandler implements SignatureHandler, Configurable {
 
@@ -46,11 +46,13 @@ public class JamesSignatureHandler implements SignatureHandler, Configurable {
 
     public JamesSignatureHandler(KeystoreLoader keystoreLoader) {
         this.keystoreLoader = keystoreLoader;
+        this.keystoreURL = "file://conf/keystore";
+        this.secret = "";
     }
 
     public void configure(HierarchicalConfiguration configuration) throws ConfigurationException {
-        keystoreURL = configuration.getString("tls.keystoreURL", "file://conf/keystoreURL");
-        secret = configuration.getString("tls.secret", "");
+        keystoreURL = configuration.getString("keystoreURL", "file://conf/keystore");
+        secret = configuration.getString("secret", "");
     }
 
     public void init() throws Exception {

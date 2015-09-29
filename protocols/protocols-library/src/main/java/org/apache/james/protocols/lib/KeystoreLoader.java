@@ -24,12 +24,17 @@ import org.apache.james.filesystem.api.FileSystem;
 import java.io.InputStream;
 import java.security.KeyStore;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+@Singleton
 public class KeystoreLoader {
 
     public static final String JKS = "JKS";
 
     private FileSystem fileSystem;
 
+    @Inject
     public void setFileSystem(FileSystem fileSystem) {
         this.fileSystem = fileSystem;
     }

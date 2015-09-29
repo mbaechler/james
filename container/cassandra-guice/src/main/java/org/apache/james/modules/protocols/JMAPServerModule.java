@@ -32,6 +32,7 @@ import org.apache.james.jmap.utils.DefaultZonedDateTimeProvider;
 import org.apache.james.protocols.lib.KeystoreLoader;
 import org.apache.james.user.api.UsersRepository;
 import org.apache.james.utils.ConfigurationPerformer;
+import org.apache.james.utils.ConfigurationProvider;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletHandler;
@@ -56,15 +57,18 @@ public class JMAPServerModule extends ServletModule {
         private final UsersRepository usersRepository;
         private final AccessTokenManager accessTokenManager;
         private final KeystoreLoader keystoreLoader;
+        private final ConfigurationProvider configurationProvider;
 
         @Inject
         public JMAPModuleConfigurationPerformer(UsersRepository usersRepository, 
-                AccessTokenManager accessTokenManager, 
-                KeystoreLoader keystoreLoader) {
+                AccessTokenManager accessTokenManager,
+                KeystoreLoader keystoreLoader,
+                ConfigurationProvider configurationProvider) {
             
             this.usersRepository = usersRepository;
             this.accessTokenManager = accessTokenManager;
             this.keystoreLoader = keystoreLoader;
+            this.configurationProvider = configurationProvider;
         }
 
         @Override
@@ -76,8 +80,11 @@ public class JMAPServerModule extends ServletModule {
             
             AuthenticationServlet authenticationServlet = new AuthenticationServlet();
             authenticationServlet.setUsersRepository(usersRepository);
+            JamesSignatureHandler signatureHandler = new JamesSignatureHandler(keystoreLoader);
+            signatureHandler.configure(configurationProvider.getConfiguration("tls"));
+            signatureHandler.init();
             authenticationServlet.setContinuationTokenManager(new SignedContinuationTokenManager(
-                    new JamesSignatureHandler(keystoreLoader), new DefaultZonedDateTimeProvider()));
+                    signatureHandler, new DefaultZonedDateTimeProvider()));
             authenticationServlet.setAccessTokenManager(accessTokenManager);
             ServletHolder servletHolder = new ServletHolder(authenticationServlet);
             handler.addServletWithMapping(servletHolder, "/*");
@@ -90,4 +97,5 @@ public class JMAPServerModule extends ServletModule {
             server.start();
         }
     }
+    
 }
