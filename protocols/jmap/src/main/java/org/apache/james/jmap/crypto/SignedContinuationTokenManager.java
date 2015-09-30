@@ -20,6 +20,7 @@
 package org.apache.james.jmap.crypto;
 
 import com.google.common.base.Preconditions;
+
 import org.apache.james.jmap.api.ContinuationTokenManager;
 import org.apache.james.jmap.model.ContinuationToken;
 import org.apache.james.jmap.utils.ZonedDateTimeProvider;
@@ -30,6 +31,10 @@ import java.security.SignatureException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+@Singleton
 public class SignedContinuationTokenManager implements ContinuationTokenManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SignedContinuationTokenManager.class);
@@ -37,6 +42,7 @@ public class SignedContinuationTokenManager implements ContinuationTokenManager 
     private final SignatureHandler signatureHandler;
     private final ZonedDateTimeProvider zonedDateTimeProvider;
 
+    @Inject
     public SignedContinuationTokenManager(SignatureHandler signatureHandler, ZonedDateTimeProvider zonedDateTimeProvider) {
         this.signatureHandler = signatureHandler;
         this.zonedDateTimeProvider = zonedDateTimeProvider;

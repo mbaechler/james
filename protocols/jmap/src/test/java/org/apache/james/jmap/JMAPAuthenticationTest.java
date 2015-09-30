@@ -82,10 +82,7 @@ public class JMAPAuthenticationTest {
         continuationTokenManager = new SignedContinuationTokenManager(new JamesSignatureHandlerProvider().provide(), mockedZonedDateTimeProvider);
         accessTokenManager = new AccessTokenManagerImpl(new MemoryAccessTokenRepository(100));
 
-        AuthenticationServlet authenticationServlet = new AuthenticationServlet();
-        authenticationServlet.setUsersRepository(mockedUsersRepository);
-        authenticationServlet.setContinuationTokenManager(continuationTokenManager);
-        authenticationServlet.setAccessTokenManager(accessTokenManager);
+        AuthenticationServlet authenticationServlet = new AuthenticationServlet(mockedUsersRepository, continuationTokenManager, accessTokenManager);
         ServletHolder servletHolder = new ServletHolder(authenticationServlet);
         handler.addServletWithMapping(servletHolder, "/*");
 

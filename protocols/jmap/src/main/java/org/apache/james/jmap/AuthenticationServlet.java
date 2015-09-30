@@ -21,6 +21,8 @@ package org.apache.james.jmap;
 import java.io.IOException;
 import java.util.function.BiFunction;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -43,6 +45,7 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+@Singleton
 public class AuthenticationServlet extends HttpServlet {
     public static final String JSON_CONTENT_TYPE = "application/json";
     public static final String JSON_CONTENT_TYPE_UTF8 = "application/json; charset=UTF-8";
@@ -57,6 +60,16 @@ public class AuthenticationServlet extends HttpServlet {
     private UsersRepository usersRepository;
     private ContinuationTokenManager continuationTokenManager;
     private AccessTokenManager accessTokenManager;
+
+    @Inject
+    public AuthenticationServlet(UsersRepository usersRepository,
+            ContinuationTokenManager continuationTokenManager,
+            AccessTokenManager accessTokenManager) {
+        super();
+        this.usersRepository = usersRepository;
+        this.continuationTokenManager = continuationTokenManager;
+        this.accessTokenManager = accessTokenManager;
+    }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -199,16 +212,5 @@ public class AuthenticationServlet extends HttpServlet {
         resp.sendError(HttpServletResponse.SC_UNAUTHORIZED);
     }
 
-    public void setUsersRepository(UsersRepository usersRepository) {
-        this.usersRepository = usersRepository;
-    }
-
-    public void setContinuationTokenManager(ContinuationTokenManager continuationTokenManager) {
-        this.continuationTokenManager = continuationTokenManager;
-    }
-
-    public void setAccessTokenManager(AccessTokenManager accessTokenManager) {
-        this.accessTokenManager = accessTokenManager;
-    }
 
 }

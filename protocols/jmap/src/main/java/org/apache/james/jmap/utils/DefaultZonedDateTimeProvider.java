@@ -22,6 +22,9 @@ package org.apache.james.jmap.utils;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
+import javax.inject.Singleton;
+
+@Singleton
 public class DefaultZonedDateTimeProvider implements ZonedDateTimeProvider {
 
     @Override

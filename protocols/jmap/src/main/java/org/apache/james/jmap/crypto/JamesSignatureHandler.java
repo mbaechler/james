@@ -25,6 +25,9 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.Signature;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.HierarchicalConfiguration;
@@ -33,6 +36,7 @@ import org.apache.james.protocols.lib.KeystoreLoader;
 
 import com.google.common.base.Preconditions;
 
+@Singleton
 public class JamesSignatureHandler implements SignatureHandler, Configurable {
 
     public static final String ALIAS = "james";
@@ -44,6 +48,7 @@ public class JamesSignatureHandler implements SignatureHandler, Configurable {
     private PrivateKey privateKey;
     private PublicKey publicKey;
 
+    @Inject
     public JamesSignatureHandler(KeystoreLoader keystoreLoader) {
         this.keystoreLoader = keystoreLoader;
         this.keystoreURL = "file://conf/keystore";
